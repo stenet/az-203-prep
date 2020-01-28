@@ -271,7 +271,7 @@ var timeout = TimeSpan.FromMinutes(30);
 client.Utilities.CreateTaskStateMonitor().WaitAll(addedTasks, TaskState.Completed, timeout);
 ```
 
-Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/master/AzBatch](https://github.com/stenet/az-203-prep/tree/master/AzBatch)
+Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch](https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch)
 
 #### run a batch job by using Azure CLI, Azure portal, and other tools
 
