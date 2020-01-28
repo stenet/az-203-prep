@@ -4,6 +4,47 @@ Auf [https://www.microsoft.com/de-de/learning/exam-az-203.aspx](https://www.micr
 
 Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinung nach wichtigen Details, Beispiele oder sonstige Informationen zur Vorbereitung auf die Prüfung dazugeschrieben.
 
+Für die Verwaltung von Subscriptions, Ressourcegruppen oder Ressourcen kann mit Hilfe des Azure Portals, der Azure CLI, Powershell, SDKs oder direkt per REST gemacht werden. Aufgrund der Wiederverwendbarkeit ist das Azure Portal nur bedingt empfehlenswert.
+
+## PowerShell
+Zur Verwendung von PowerShell wird die aktuellste PowerShell Core (gibt's für Windows, Mac und Linux) empfohlen. Zusätzlich muss das Modul "Az" installiert werden.
+
+```powershell
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+```
+
+Anschließend kann ein Login gemacht werden.
+
+```powershell
+Login-AzAccount -SubscriptionName Test
+```
+
+Hier wird ein Link sowie ein Code angezeigt. Der Link wird im Browser geöffnet und dort der Code eingegeben.
+
+## Azure CLI
+
+Für Windows kann die Azure CLI unter [https://aka.ms/installazurecliwindows](https://aka.ms/installazurecliwindows) heruntergeladen und installiert werden.
+
+Der Login wird wie folgt gemacht
+
+```batch
+az login
+```
+
+Die Befehle in der Azure CLI haben immer den selben Aufbau: az + Ressourcentyp + Verb. Beispiel:
+
+```batch
+az vm create ...
+```
+
+Der Nachteil, im Vergleich zu PowerShell ist, dass es keine automatische Vervollständigung und Darstellung der möglichen Parameter gibt. Diese müssen mittels der Hilfe zuerst herausgefunden werden.
+
+```batch
+az vm create --help
+```
+
+Daher bevorzuge ich PowerShell ;-).
+
 ## Develop Azure Infrastructure as a Service compute solution
 
 ### Implement solutions that use virtual machines (VM)
