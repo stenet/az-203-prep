@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AzBatch": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "development"
+      }
+    }
+  }
+}

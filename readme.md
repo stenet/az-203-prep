@@ -211,9 +211,73 @@ Mit Hilfe von Azure Batch können aufwändige Operationen, die sich in parallel 
 
 #### manage batch jobs by using Batch Service API
 
+Wenn der Pool definiert ist, dann können Jobs erstellt werden. Ein Job kann wiederum mehrere Tasks haben. Der Task enthält Input-Dateien sowie den Befehl (Commandline), der zum Start ausgeführt werden soll.
+
+Nachfolgend der Ablauf mit den wichtigsten Funktionen
+
+Client erstellen
+
+```csharp
+var client = BatchClient.Open(credentials)
+```
+
+Pool erstellen
+
+```csharp
+var pool = client.PoolOperations.CreatePool(
+  POOL_ID,
+  "Standard_A1_v2",
+  new VirtualMachineConfiguration(
+      imageReference: new ImageReference(
+          publisher: "MicrosoftWindowsServer",
+          offer: "WindowsServer",
+          sku: "2016-datacenter-smalldisk",
+          version: "latest"),
+      nodeAgentSkuId: "batch.node.windows amd64"),
+  targetDedicatedComputeNodes: 2);
+
+pool.Commit();
+```
+
+Job erstellen
+
+```csharp
+var job = client.JobOperations.CreateJob();
+job.Id = JOB_ID;
+job.PoolInformation = new PoolInformation() { PoolId = pool.Id };
+
+job.Commit();
+```
+
+Task erstellen
+
+```csharp
+var task = new CloudTask(id, commandline);
+task.ResourceFiles = new List<ResourceFile>() { resourceFile };
+```
+
+Die Tasks werden in einer Liste gesammelt und gesamt zur Verarbeitung übergeben
+
+```csharp
+client.JobOperations.AddTask(job.Id, taskList);
+```
+
+Prüfung, ob Tasks fertig sind
+
+```csharp
+var addedTasks = client.JobOperations.ListTasks(job.Id);
+var timeout = TimeSpan.FromMinutes(30);
+
+client.Utilities.CreateTaskStateMonitor().WaitAll(addedTasks, TaskState.Completed, timeout);
+```
+
+Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/master/AzBatch](https://github.com/stenet/az-203-prep/tree/master/AzBatch)
+
 #### run a batch job by using Azure CLI, Azure portal, and other tools
 
 #### write code to run an Azure Batch Service job
+
+Dies wurde bereits zuvor behandelt ;-)
 
 ### Create containerized solutions
 
