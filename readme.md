@@ -6,7 +6,9 @@ Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinun
 
 Für die Verwaltung von Subscriptions, Ressourcegruppen oder Ressourcen kann mit Hilfe des Azure Portals, der Azure CLI, Powershell, SDKs oder direkt per REST gemacht werden. Aufgrund der Wiederverwendbarkeit ist das Azure Portal nur bedingt empfehlenswert.
 
-## PowerShell
+## Allgemeines
+
+### PowerShell
 Zur Verwendung von PowerShell wird die aktuellste PowerShell Core (gibt's für Windows, Mac und Linux) empfohlen. Zusätzlich muss das Modul "Az" installiert werden.
 
 ```powershell
@@ -21,7 +23,7 @@ Login-AzAccount -SubscriptionName Test
 
 Hier wird ein Link sowie ein Code angezeigt. Der Link wird im Browser geöffnet und dort der Code eingegeben.
 
-## Azure CLI
+### Azure CLI
 
 Für Windows kann die Azure CLI unter [https://aka.ms/installazurecliwindows](https://aka.ms/installazurecliwindows) heruntergeladen und installiert werden.
 
@@ -44,6 +46,10 @@ az vm create --help
 ```
 
 Daher bevorzuge ich PowerShell ;-).
+
+### Ressourcengruppen
+
+Jede Ressource, die in Azure erstellt wird, wird einer Ressourcengruppe zugeordnet. Dies hat u.a. den Vorteil, dass diese bei der Abrechnung speziell ausgewertet werden können und auch, dass eine Ressourcengruppe als gesamtes gelöscht werden kann, was beim Testen von einzelnen Ressourcen sehr vorteilhaft ist.
 
 ## Develop Azure Infrastructure as a Service compute solution
 
