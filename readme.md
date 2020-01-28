@@ -202,6 +202,13 @@ Set-AzVMDiskEncryptionExtension `
 
 ### Implement batch jobs by using Azure Batch Services
 
+Die nachfolgende Grafik zeigt den Ablauf bei Verwendung von Azure Batch.
+
+![Überblick Azure Batch](images/az_batch_overview.png)
+[https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview](https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview)
+
+Mit Hilfe von Azure Batch können aufwändige Operationen, die sich in parallel abarbeiten lassen, optimal und schnell durchführen. Im Batch Account werden Pools definiert. Der Pool definiert welches Betriebssystem verwendet werden soll, wie groß die Nodes sein sollen, wie sich die Skalierung verhalten soll, wie viele Nodes es geben soll, wie viele Tasks parallel auf einer Node ausgeführt werden können, die zu installierende Applikation, Netzwerk, usw.
+
 #### manage batch jobs by using Batch Service API
 
 #### run a batch job by using Azure CLI, Azure portal, and other tools
