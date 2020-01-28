@@ -60,7 +60,8 @@ Jede Ressource, die in Azure erstellt wird, wird einer Ressourcengruppe zugeordn
 Nachfolgend ein stark vereinfachtes Beispiel mit PowerShell. 
 
 ```powershell
-New-AzVm -ResourceGroupName TestRG `
+New-AzVm `
+  -ResourceGroupName TestRG `
   -Name VM `
   -Location "West Europe" `
   -OpenPorts 80,3389
@@ -78,6 +79,30 @@ mstsc /v:11.11.11.11
 > Wichtige Randnotiz: wird eine VM heruntergefahren, wird diese trotzdem verrechnet! Um dies zu verhindern, muss die VM im Portal oder mittels Skript gestoppt (in den "deallocated"-Status) gebracht werden.
 
 #### create ARM templates
+
+Bei einer ARM-Vorlage handelt es sich um eine JSON-Datei, die die zu erstellenden Ressourcen inkl. aller Parameter enthält. Die Parameter können dabei fix in der Datei stehen, können aber auch berechnet (über Variablen) oder aus einer separaten Parameter-Datei gelesen werden.
+
+ARM-Vorlagen bieten u.a. folgende Vorteile:
+* Deklarative Syntax
+* Wiederholbar Ergebnisse
+* Abbildung von Abhängigkeiten der Ressourcen
+* Validierung der Vorlage
+
+Folgende Eigenschaften sind pflicht in einer ARM-Vorlage:
+* $schema - das zugrundeliegende Schema der Vorlagendatei
+* contentVersion - die Version der Vorlage
+* resources - die zu erstellenden Ressourcen
+
+Eine solche Datei von Hand zu erstellen, wird vermutlich niemand machen. Stattdessen gibt es z.B. bei GitHub das Repository [https://github.com/Azure/azure-quickstart-templates](https://github.com/Azure/azure-quickstart-templates) mit vielen vorgefertigen Templates, die noch einfach an die eigenen Bedürfnisse angepasst werden können.
+
+Nachfolgend das PowerShell-Skript, um das Template zu aktivieren:
+
+```powershell
+New-AzResourceGroupDeployment `
+  -ResourceGroupName TestRG `
+  -TemplateFile c:\temp\template.json `
+  -TemplateParameterFile c:\temp\template.parameters.json
+```
 
 #### configure Azure Disk Encryption for VMs
 
