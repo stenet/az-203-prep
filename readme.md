@@ -76,7 +76,67 @@ Get-AzPublicIpAddress | where Name -eq VM | select IpAddress
 mstsc /v:11.11.11.11
 ```
 
-> Wichtige Randnotiz: wird eine VM heruntergefahren, wird diese trotzdem verrechnet! Um dies zu verhindern, muss die VM im Portal oder mittels Skript gestoppt (in den "deallocated"-Status) gebracht werden.
+Wichtige Randnotiz: wird eine VM heruntergefahren, wird diese trotzdem verrechnet! Um dies zu verhindern, muss die VM im Portal oder mittels Skript gestoppt (in den "deallocated"-Status) gebracht werden.
+
+```powershell
+Stop-AzVm ` 
+  -ResourceGroupName TestRG `
+  -Name VM
+```
+
+Aus bestehenden VMs können Images erstellt werden. Diese können zukünftig beim Erstellen neuer VMs verwendet werden. Bevor dies gemacht werden kann, muss das Betriebssystem hardwareunabhängig gemacht ("generalisiert") werden. Unter Windows wird hierfür "sysprep" und unter Linux "waagent" verwendet. Wichtig: Betriebssysteme, die generalisiert wurden, können nicht mehr verwendet werden!
+
+Innerhalb der VM
+
+```bash
+%windir%\system32\sysprep\sysprep.exe /generalize /oobe /shutdown
+```
+
+Anschließend wird die VM stoppt, generalisiert, eine Image Config erstellt und das Image erstellt. Wichtig: Befehle erst ausführen, wenn die VM im Status "VM stopped" ist!
+
+```powershell
+Stop-AzVm `
+  -ResourceGroupName TestRG `
+  -Name VM
+
+Set-AzVM `
+  -ResourceGroupName TestRG `
+  -Name VM `
+  -Generalized
+
+$vm = Get-AzVM `
+  -ResourceGroupName TestRG `
+  -Name VM
+
+$image = New-AzImageConfig `
+  -Location "West Europe" `
+  -SourceVirtualMachineId $vm.ID
+
+New-AzImage `
+  -ResourceGroupName TestRG `
+  -Image $image `
+  -ImageName VMImage
+```
+
+Anschließend kann eine neue VM mit dem zuvor gespeicherten Image erstellt werden:
+
+```powershell
+New-AzVm `
+  -ResourceGroupName TestRG `
+  -Name VMNeu `
+  -Location "West Europe" `
+  -ImageName VMImage `
+  -OpenPorts 80,3389
+```
+
+Mit folgendem Befehl kann der Status der VM abgefragt werden:
+
+```powershell
+Get-AzVm `
+  -ResourceGroupName TestRG `
+  -Name VM `
+  -Status
+```
 
 #### create ARM templates
 
@@ -105,6 +165,40 @@ New-AzResourceGroupDeployment `
 ```
 
 #### configure Azure Disk Encryption for VMs
+
+Ziel von verschlüssleten Datenträgern ist, dass diese, falls sie gestohlen werden, nicht ausgelesen werden können. Für Windows-VMs wird hierfür BitLocker eingesetzt, für Linux-VMs dm-crypt.
+
+Um Datenträger verschlüsseln zu können, muss ein KeyVault mit EnabledForDiskEncryption erstellt werden/vorhanden sein.
+
+```powershell
+New-AzKeyvault `
+  -ResourceGroupName TestRG `
+  -name TestKeyVault `
+  -Location "West Europe" `
+  -EnabledForDiskEncryption
+
+$keyVault = Get-AzKeyVault `
+  -ResourceGroupName TestRG `
+  -VaultName TestKeyVault
+```
+
+Nachfolgend der Code zum Erstellen einer VM und anschließendem Verschlüsseln.
+
+```powershell
+New-AzVm `
+  -ResourceGroupName TestRG `
+  -Name VM `
+  -Location "West Europe" `
+  -OpenPorts 80,3389
+
+Set-AzVMDiskEncryptionExtension `
+  -ResourceGroupName TestRG `
+  -VMName VM `
+  -DiskEncryptionKeyVaultUrl $keyVault.VaultUri `
+  -DiskEncryptionKeyVaultId $keyVault.ResourceId `
+  -SkipVmBackup `
+  -VolumeType All
+```
 
 ### Implement batch jobs by using Azure Batch Services
 
