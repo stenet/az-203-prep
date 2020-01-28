@@ -51,6 +51,26 @@ Daher bevorzuge ich PowerShell ;-).
 
 #### provision VMs
 
+Nachfolgend ein stark vereinfachtes Beispiel mit PowerShell. 
+
+```powershell
+New-AzVm -ResourceGroupName TestRG `
+  -Name VM `
+  -Location "West Europe" `
+  -OpenPorts 80,3389
+```
+
+Damit wird eine Windows Server 2016 mit der Standardgröße "Standard DS1 v2" erstellt. Zusätzlich wird ein NIC, ein virtuelles Netzwerk, eine öffentliche IP-Adresse, eine Netzwerk Sicherheitsgruppe sowie eine Festplatte erstellt. Im produktiven Umfeld würde man dies natürlich nicht so machen, sondern die einzelnen Elemente, die erstellt werden sollen, explizit angeben/benennen.
+
+Anschließend kann die IP-Adresse abgefragt werden sowie mit RDM eine Remotesitzung gestartet werden.
+
+```powershell
+Get-AzPublicIpAddress | where Name -eq VM | select IpAddress
+mstsc /v:11.11.11.11
+```
+
+> Wichtige Randnotiz: wird eine VM heruntergefahren, wird diese trotzdem verrechnet! Um dies zu verhindern, muss die VM im Portal oder mittels Skript gestoppt (in den "deallocated"-Status) gebracht werden.
+
 #### create ARM templates
 
 #### configure Azure Disk Encryption for VMs
