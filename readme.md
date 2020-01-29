@@ -275,6 +275,49 @@ Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/mast
 
 #### run a batch job by using Azure CLI, Azure portal, and other tools
 
+Das Beispiel von oben lässt sich mehr oder weniger auch in PowerShell nachbauen. Nachfolgend der Code dazu (inkl. dem Erzeugen eines Batch-Accounts):
+
+```powershell
+$batch = New-AzBatchAccount `
+  -ResourceGroupName TestRG `
+  -AccountName testbatch20200128 `
+  -Location "West Europe" 
+
+$imageRef = New-Object `
+  -TypeName "Microsoft.Azure.Commands.Batch.Models.PSImageReference" `
+  -ArgumentList @("windowsserver","microsoftwindowsserver","2019-datacenter-core")
+
+$configuration = New-Object `
+  -TypeName "Microsoft.Azure.Commands.Batch.Models.PSVirtualMachineConfiguration" `
+  -ArgumentList @($imageRef, "batch.node.windows amd64")
+
+New-AzBatchPool `
+  -Id testpool `
+  -VirtualMachineSize "Standard_a1" `
+  -VirtualMachineConfiguration $configuration `
+  -AutoScaleFormula '$TargetDedicated=2;' `
+  -BatchContext $batch
+
+$poolInfo = New-Object `
+  -TypeName "Microsoft.Azure.Commands.Batch.Models.PSPoolInformation"
+
+$poolInfo.PoolId = "testpool" 
+
+$job = New-AzBatchJob `
+  -PoolInformation $poolInfo `
+  -Id testjob `
+  -BatchContext $batch
+
+$task01 = New-Object `
+  -TypeName Microsoft.Azure.Commands.Batch.Models.PSCloudTask `
+  -ArgumentList @("task01", "cmd /c dir /s")
+
+$task = New-AzBatchTask `
+  -JobId testjob `
+  -BatchContext $batch `
+  -Tasks @($task01)
+```
+
 #### write code to run an Azure Batch Service job
 
 Dies wurde bereits zuvor behandelt ;-)
