@@ -482,7 +482,7 @@ Tada, und schon ist das Image in unserem privaten Repository und kann verwendet 
 
 #### run containers by using Azure Container Instance or AKS
 
-Wie ein Container in AKS gestartet werden kann, wurde bereits vorher beschrieben. Hier noch die Alternative mit Azure Container Instance.
+Wie ein Container in AKS gestartet werden kann, wurde bereits vorher beschrieben. Hier noch die Alternative mit Azure Container Instance. Hier sollte noch erwähnt werden, dass es nicht sinnvoll ist, einen Container so zu starten und durchgehend laufen zu lassen, da dies ziemlich ins Geld geht ;-)
 
 ```powershell
 $cred = Get-AzContainerRegistryCredential `
