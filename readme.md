@@ -521,7 +521,7 @@ Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzAppSe
 
 Im vorherigen Beispiel-Code steckt auch ein WebJobs-Projekt. Dieses ändert alle 5 Sekunden den Wert in einer Datei. Die Web App liefert auf der Startseite diesen Wert aus. Dies zeigt, dass sowohl die App als auch der WebJob in der gleichen Instanz laufen.
 
-Kleiner Hinweis (der mich ein zwei Stunden gekostet hat): auch wenn sowohl die Web App als auch der WebJob in der gleichen Instanz laufen, teilen sie sich nicht das Temp-Verzeichnis. Dieses befindet sich zwar jeweils unter d:\local\temp, ist separat gemounted.
+Kleiner Hinweis (der mich zwei Stunden gekostet hat): auch wenn sowohl die Web App als auch der WebJob in der gleichen Instanz laufen, teilen sie sich nicht das Temp-Verzeichnis. Dieses befindet sich zwar jeweils unter d:\local\temp, ist separat gemounted.
 
 #### enable diagnostics logging
 
