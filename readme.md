@@ -435,9 +435,77 @@ az aks browse --resource-group TestRG --name TestAKS
 
 #### create container images for solutions
 
+Jetzt erstellen wir ein eigenes Docker-Image :-) Der Code befindet sich im Unterordner custom-nginx inkl. dem nachfolgenden Dockerfile.
+
+```dockerfile
+FROM nginx
+
+WORKDIR /usr/share/nginx/html
+COPY ./www .
+
+EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Mit der PowerShell in den Ordner wechseln, wo das Dockerfile ist und folgenden Befehl ausführen:
+
+```powershell
+docker build . -t custom-nginx:latest
+docker run -p 8099:80 custom-nginx
+```
+
+Anschließend kann im Browser die URL localhost:8099 geöffnet werden.
+
 #### publish an image to Azure Container Registry
 
+Nachfolgend der Code, um das vorherige Beispiel in einer Azure Container Registry zu speichern.
+
+Zuerst wird eine Registry erstellt:
+
+```powershell
+$acr = New-AzContainerRegistry `
+  -ResourceGroupName TestRG `
+  -Name TestACR20200129 `
+  -Sku Standard
+  -EnableAdminUser
+
+$loginserver = $acr.LoginServer
+
+az acr login --name TestACR20200129
+
+docker tag custom-nginx $loginserver/custom-nginx:v1
+docker push $loginserver/custom-nginx:v1
+```
+
+Tada, und schon ist das Image in unserem privaten Repository und kann verwendet werden ;-)
+
 #### run containers by using Azure Container Instance or AKS
+
+Wie ein Container in AKS gestartet werden kann, wurde bereits vorher beschrieben. Hier noch die Alternative mit Azure Container Instance.
+
+```powershell
+$cred = Get-AzContainerRegistryCredential `
+  -ResourceGroupName TestRG `
+  -Name TestACR20200129
+
+$secpasswd = ConvertTo-SecureString $cred.Password `
+  -AsPlainText `
+  -Force
+
+$cred2 = New-Object `
+  -TypeName System.Management.Automation.PSCredential `
+  -ArgumentList @($cred.Username, $secpasswd)
+
+New-AzContainerGroup `
+  -ResourceGroupName TestRG `
+  -Name testaci20200129 `
+  -Image $loginserver/custom-nginx:v1 `
+  -IpAddressType Public `
+  -OsType Linux `
+  -Port @(80) `
+  -RegistryCredential $cred2
+```
 
 ## Develop Azure Platform as a Service compute solutions
 
