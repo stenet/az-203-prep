@@ -513,7 +513,15 @@ New-AzContainerGroup `
 
 #### create an Azure App Service Web App
 
+Bei der Verwendung von Visual Studio ist das ganze sehr einfach. Man erstellt eine neue ASP.NET Core Web Application und klickt sich durch. Beim Veröffentlichen der App nimmt einem der Assistent die ganze Arbeit ab.
+
+Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzAppService](https://github.com/stenet/az-203-prep/tree/master/vs/AzAppService).
+
 #### create an Azure App Service background task by using WebJobs
+
+Im vorherigen Beispiel-Code steckt auch ein WebJobs-Projekt. Dieses ändert alle 5 Sekunden den Wert in einer Datei. Die Web App liefert auf der Startseite diesen Wert aus. Dies zeigt, dass sowohl die App als auch der WebJob in der gleichen Instanz laufen.
+
+Kleiner Hinweis (der mich ein zwei Stunden gekostet hat): auch wenn sowohl die Web App als auch der WebJob in der gleichen Instanz laufen, teilen sie sich nicht das Temp-Verzeichnis. Dieses befindet sich zwar jeweils unter d:\local\temp, ist separat gemounted.
 
 #### enable diagnostics logging
 
