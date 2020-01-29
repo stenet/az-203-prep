@@ -525,7 +525,43 @@ Kleiner Hinweis (der mich zwei Stunden gekostet hat): auch wenn sowohl die Web A
 
 #### enable diagnostics logging
 
+Bei Web Apps, die unter Windows laufen, können div. Loggings aktiviert werden. Hierfür im Portal die Web App öffnen und auf "App Service Logs" klicken. Dort können u.a. folgende Logs aktiviert werden:
+
+* Application
+* Web server
+* Detailed error messages
+* Failed request tracking
+
+Je Typ werden die Daten in entsprechenden Orten abgelegt (Dateisystem, Blob, FTP).
+
+Bei Linux kann nur "Application logging" aktiviert werden.
+
+Weiters ist es möglich unter "Diagnostic settings" die Logs an Azure Monitor weiterzuleiten, welches das zentrale Modul für Alert und Metriken darstellt.
+
 #### create an Azure Web App for containers
+
+Docker Container können neben K8s und Azure Container Instance auch noch in App Services laufen.
+
+Nachfolgend wird als erstes ein Service Plan erstellt und anschließend ein nginx Docker Container in diesem gestartet.
+
+```powershell
+New-AzAppServicePlan `
+  -ResourceGroupName TestRG `
+  -Location "West Europe" `
+  -Tier Standard `
+  -Name plan20200129
+
+New-AzWebApp `
+  -ResourceGroupName TestRG `
+  -Name nginx20200129 `
+  -AppServicePlan plan20200129 `
+  -ContainerImageName nginx
+
+Set-AzWebApp `
+  -ResourceGroupName TestRG `
+  -Name nginx20200129 `
+  -AppSettings @{"WEBSITES_PORT"="80"}
+```
 
 #### monitor service health by using Azure Monitor
 
