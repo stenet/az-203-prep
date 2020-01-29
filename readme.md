@@ -27,7 +27,7 @@ Hier wird ein Link sowie ein Code angezeigt. Der Link wird im Browser geöffnet 
 
 Für Windows kann die Azure CLI unter [https://aka.ms/installazurecliwindows](https://aka.ms/installazurecliwindows) heruntergeladen und installiert werden.
 
-Der Login wird wie folgt gemacht
+Der Login wird wie folgt gemacht:
 
 ```batch
 az login
@@ -86,7 +86,7 @@ Stop-AzVm `
 
 Aus bestehenden VMs können Images erstellt werden. Diese können zukünftig beim Erstellen neuer VMs verwendet werden. Bevor dies gemacht werden kann, muss das Betriebssystem hardwareunabhängig gemacht ("generalisiert") werden. Unter Windows wird hierfür "sysprep" und unter Linux "waagent" verwendet. Wichtig: Betriebssysteme, die generalisiert wurden, können nicht mehr verwendet werden!
 
-Innerhalb der VM
+Innerhalb der VM:
 
 ```bash
 %windir%\system32\sysprep\sysprep.exe /generalize /oobe /shutdown
@@ -213,15 +213,15 @@ Mit Hilfe von Azure Batch können aufwändige Operationen, die sich in parallel 
 
 Wenn der Pool definiert ist, dann können Jobs erstellt werden. Ein Job kann wiederum mehrere Tasks haben. Der Task enthält Input-Dateien sowie den Befehl (Commandline), der zum Start ausgeführt werden soll.
 
-Nachfolgend der Ablauf mit den wichtigsten Funktionen
+Nachfolgend der Ablauf mit den wichtigsten Funktionen.
 
-Client erstellen
+Client erstellen:
 
 ```csharp
 var client = BatchClient.Open(credentials)
 ```
 
-Pool erstellen
+Pool erstellen:
 
 ```csharp
 var pool = client.PoolOperations.CreatePool(
@@ -239,7 +239,7 @@ var pool = client.PoolOperations.CreatePool(
 pool.Commit();
 ```
 
-Job erstellen
+Job erstellen:
 
 ```csharp
 var job = client.JobOperations.CreateJob();
@@ -249,20 +249,20 @@ job.PoolInformation = new PoolInformation() { PoolId = pool.Id };
 job.Commit();
 ```
 
-Task erstellen
+Task erstellen:
 
 ```csharp
 var task = new CloudTask(id, commandline);
 task.ResourceFiles = new List<ResourceFile>() { resourceFile };
 ```
 
-Die Tasks werden in einer Liste gesammelt und gesamt zur Verarbeitung übergeben
+Die Tasks werden in einer Liste gesammelt und gesamt zur Verarbeitung übergeben:
 
 ```csharp
 client.JobOperations.AddTask(job.Id, taskList);
 ```
 
-Prüfung, ob Tasks fertig sind
+Prüfung, ob Tasks fertig sind:
 
 ```csharp
 var addedTasks = client.JobOperations.ListTasks(job.Id);
@@ -271,11 +271,11 @@ var timeout = TimeSpan.FromMinutes(30);
 client.Utilities.CreateTaskStateMonitor().WaitAll(addedTasks, TaskState.Completed, timeout);
 ```
 
-Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch](https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch)
+Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch](https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch).
 
 #### run a batch job by using Azure CLI, Azure portal, and other tools
 
-Das Beispiel von oben lässt sich mehr oder weniger auch in PowerShell nachbauen. Nachfolgend der Code dazu (inkl. dem Erzeugen eines Batch-Accounts):
+Das Beispiel von oben lässt sich mehr oder weniger auch in PowerShell nachbauen. Nachfolgend der Code dazu (inkl. dem Erzeugen eines Batch-Accounts, dafür ohne Storage):
 
 ```powershell
 $batch = New-AzBatchAccount `
@@ -325,6 +325,113 @@ Dies wurde bereits zuvor behandelt ;-)
 ### Create containerized solutions
 
 #### create an Azure Managed Kubernetes Service (AKS) cluster
+
+Einführend ein paar Worte zu Kubernetes (K8s). Dies wurde 2014 von Google als Open-Source-Projekt veröffentlicht. Sinn von K8s ist die Orchestrierung und Überwachung von Containern. 
+
+![Überblick K8s](images/az_aks_k8s.png)
+[https://de.wikipedia.org/wiki/Kubernetes](https://de.wikipedia.org/wiki/Kubernetes)
+
+Wie man in der Grafik oben sieht gibt es einen Master (könnten auch mehrere sein) und mehrere Nodes. Der Master steuert den Cluster. Innerhalb einer Node arbeiten Pods (Arbeitsprozesse). Innerhalb eines Pods laufen ein oder mehrere Container.
+
+Erstmal die Kubernetes CLI installieren. Klappt, wieso auch immer, am einfachsten über die Azure CLI ;-).
+
+```bash
+az aks install-cli
+```
+
+Anschließend wird angezeigt, dass der Ort, an dem die CLI installiert wurde, in den Path übernommen werden soll. Dies kann man wunderbar einfach mit PowerShell machen.
+
+```powershell
+$env:Path += "DER_PFAD_VON_OBEN"
+```
+
+So dann können wir einen Kubernetes Cluster erzeugen. Falls noch kein ssh-key erstellt wurde, muss dies zuerst gemacht werden.
+
+```powershell
+ssh-keygen
+```
+
+Jetzt den Cluster erstellen:
+
+```powershell
+New-AzAks `
+  -ResourceGroupName TestRG `
+  -Name TestAKS `
+  -NodeCount 2 `
+  -KubernetesVersion "1.14.8"
+```
+
+Anschließend muss mit der Azure CLI der Kontext für kubectl gesetzt werden. Die zwei folgenden Befehle haben bei mir in der PowerShell nicht zum gewünschten Ergebnis geführt. kubectl hat immer eine Fehlermeldung ausgegeben. Habe den Code dann in der Windows Commandline ausgeführt und dann hat's geklappt ...
+
+```bash
+az aks get-credentials --resource-group TestRG --name TestAKS
+```
+
+Jetzt können wir den Status der Nodes überprüfen:
+
+```bash
+kubectl get nodes
+```
+
+Und schon haben wir wir einen K8s-Cluster. Jetzt können wir ein Image darauf laufen lassen. Dafür benötigen wir eine yaml-Datei mit den Instruktionen für K8s.
+
+Beispiel für eine yaml-Datei, die einen nginx mit 2 Replikas erstellt:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx
+  type: LoadBalancer
+```
+
+Aktivieren der yaml-Datei:
+
+```powershell
+kubectl apply -f .\aks_simple.yaml
+```
+
+Um anschließend die externe IP-Adresse des Services zu bekommen, kann der folgende Befehl ausgeführt werden (dauert aber ein paar Minuten, bis die IP provisioniert wurde):
+
+```powershell
+kubectl get services
+```
+
+Das K8s-Dashboard kann mit folgendem Befehl geöffnet werden:
+
+```bash
+az aks browse --resource-group TestRG --name TestAKS
+```
 
 #### create container images for solutions
 
