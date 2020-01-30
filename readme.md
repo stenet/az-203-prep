@@ -45,7 +45,7 @@ Der Nachteil, im Vergleich zu PowerShell ist, dass es keine automatische Vervoll
 az vm create --help
 ```
 
-Daher bevorzuge ich PowerShell ;-).
+Daher bevorzuge ich PowerShell, da ich dort mittels Strg+Leertaste oder Tab einen Vorschlag bekomme, was möglich ist und nicht immer die Hilfe benötige. Nichts desto trotz habe ich festgestellt, dass manche Funktionalitäten in den PowerShell Cmdlets noch nicht zur Verfügung stehen bzw. nur sehr umständlich sind. In diesem Fall bin ich auf die Azure CLI ausgewichen, die meiner Meinung nach sehr logisch aufgebaut und einfach zu verwenden ist. ;-).
 
 ### Ressourcengruppen
 
