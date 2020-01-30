@@ -544,26 +544,22 @@ Docker Container können neben K8s und Azure Container Instance auch noch in App
 
 Nachfolgend wird als erstes ein Service Plan erstellt und anschließend ein nginx Docker Container in diesem gestartet.
 
-Leider funktioniert das so nicht wie gewünscht, da der Service Plan nicht als Linux Service Plan erstellt werden kann ... Stattdessen wird immer ein normaler Webserver erstellt. TODO
-
 ```powershell
-New-AzAppServicePlan `
-  -ResourceGroupName TestRG `
-  -Location "West Europe" `
-  -Tier Standard `
-  -Name plan20200129
+az appservice plan create `
+  -g TestRG `
+  -l "West Europe" `
+  -n plan20200129 `
+  --sku S1 `
+  --is-linux
 
-New-AzWebApp `
-  -ResourceGroupName TestRG `
-  -Name nginx20200129 `
-  -AppServicePlan plan20200129 `
-  -ContainerImageName nginx
-
-Set-AzWebApp `
-  -ResourceGroupName TestRG `
-  -Name nginx20200129 `
-  -AppSettings @{"WEBSITES_PORT"="80"}
+az webapp create `
+  -g TestRG `
+  -p plan20200129 `
+  -n nginx20200129 `
+  -i nginx
 ```
+
+Das Beispiel habe ich mit der Azure CLI gemacht, da das PowerShell Cmdlet keine Möglichkeit hatte einen Linux Service Plan zu erstellen. 
 
 #### monitor service health by using Azure Monitor
 
