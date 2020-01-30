@@ -574,7 +574,15 @@ Zusätzlich werden Daten aggregiert. Mit Alerts können bei eintreten von bestim
 
 #### add push notifications for mobile apps
 
+Nicht selbst ausprobiert, aber hier die Kurzfassung aus der Dokumentation:
+
+In Azure einen "Notification Hub" erstellen. Sobald dieser erstellt ist, diesen öffnen und das Apple, Google oder weiß der Geier was Konto hinzufügen ;-)
+
+Im Server-Code das NuGet Package "Microsoft.Azure.NotificationHub" hinzufügen, einen NotificationHubClient erstellen und dort die passende Send***-Methode aufrufen. 
+
 #### enable offline sync for mobile app
+
+TODO
 
 #### implement a remote instrumentation strategy for mobile devices
 
@@ -582,7 +590,15 @@ Zusätzlich werden Daten aggregiert. Mit Alerts können bei eintreten von bestim
 
 #### create an Azure App Service API app
 
+Eigentlich ist mir hier nicht ganz klar, was das sein soll. Ich verstehe darunter nichts anderes als eine Web API Anwendung, die z.B. mit ASP.NET Core erstellt und einem Service Plan veröffentlicht wird. Und da das bereits weiter oben beschrieben wurde, kommt hier nichts mehr ;-).
+
 #### create documentation for the API by using open source and other tools
+
+Hier geht es primär um den Einsatz von OpenAPI (früher Swagger). Dabei handelt es sich um eine Spezifikation zum Beschreiben von REST APIs, die sowohl von Menschen als auch Computern verstanden werden kann.
+
+Um eine OpenAPI-Dokumentation für eine ASP.NET Anwendung erstellen zu können, kann z.B. mit NuGet das Swashbuckle-Packet installiert werden. Dieses liest die Kommentare einer Methode sowie summary/remark/return/param/response aus und erstellt dadurch die Beschreibung.
+
+TODO Beschreibung Erstellen OpenAPI für Azure Functions
 
 ### Implement Azure functions
 
