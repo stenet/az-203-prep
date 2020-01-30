@@ -563,6 +563,13 @@ Das Beispiel habe ich mit der Azure CLI gemacht, da das PowerShell Cmdlet keine 
 
 #### monitor service health by using Azure Monitor
 
+Azure Monitor ist das zentrale Monitoring Tool, das Telemetriedaten aus Azure-Ressourcen aber auch aus lokalen Prozessen sammelt und visualisiert.
+
+![Überblick K8s](images/az_monitor_overview.jpg)
+[https://azure.microsoft.com/de-de/services/monitor/](https://azure.microsoft.com/de-de/services/monitor/)
+
+Zusätzlich werden Daten aggregiert. Mit Alerts können bei eintreten von bestimmten Bedingungen Personen z.B. per Email oder SMS informiert oder sonstige Aktionen (Azure Function, Azure LogicApp, ...) ausgelöst werden. 
+
 ### Create Azure App Service mobile apps
 
 #### add push notifications for mobile apps
