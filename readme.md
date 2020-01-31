@@ -602,11 +602,36 @@ TODO Beschreibung Erstellen OpenAPI für Azure Functions
 
 ### Implement Azure functions
 
+Mit Azure Functions können Funktionen veröffentlicht werden. Diese können z.B. über ein Assembly zur Verfügung gestellt oder aber z.B. direkt im Azure Portal erstellt werden. Aktiviert werden können sie z.B. durch Webhooks, Timers, Service Bus, Event Grid, ... Jede Function benötigt genau einen solchen Trigger.
+
+Als Sprachen zur Erstellung von Functions steht .NET Core, Node.js, Python, Java und PowerShell Core zur Verfügung.
+
 #### implement input and output bindings for a function
+
+Bindings ermöglichen die einfache Verwendung von zusätzliche Ressourchen (z.B. Blog-Storage, Cosmos DB, ...). Dabei wird zwischen Input- und Output-Bindings unterschieden. Aufgrund des Namens dürfte die Bedeutung klar sein ;-).
+
+Hier ein Beispiel für einen Trigger:
+
+```csharp
+[FunctionName("BlogTrigger")]        
+public static void Run([BlobTrigger("xyz/{name}")] Stream blob, string name, ILogger log)
+{
+    log.LogInformation($"Es wurde eine neue Datei in den Container xyz mit dem Namen {name} und der Größe Size: {myBlob.Length} Bytes hinzugefügt.");
+}
+```
+Dieser wird ausgeführt, wenn im definierten Storage-Account im Container "xyz" eine Datei hinzugefügt wird. "xyz/{name}" ist eine Binding Expression ([https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-expressions-patterns](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-expressions-patterns)).
+
+Mit dem Parameter "blob" bekommen wird den direkten Zugriff auf den Blob der erstellt wurde. 
+
+Wird die Function im Azure Portal erstellt, dann fallen die Attribute wie "FunctionName", "BlobTrigger" weg, da diese bereits durch die Definition bekannt/definiert sind.
 
 #### implement function triggers by using data operations, timers, and webhooks
 
 #### implement Azure Durable Functions
+
+Normale Azure Functions sind stateless. Dies bedeutet, dass diese ausgeführt werden und fertig. Mit Durable Functions verhält es sich leicht anders. Diese haben die Möglichkeit andere Azure Functions aufzurufen (inkl. Ergebnisabfrage) sowie Events zu senden und zu erwarten. Dabei kann die Durable Function auch längere Zeit in einem Wartemodus verharren. 
+
+Als Beispiel hierfür gibt es unter [https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-phone-verification](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-phone-verification) den Code für den Versand einer Verifizierungs-SMS, die vom Benutzer bestätigt werden muss.
 
 #### create Azure Function apps by using Visual Studio
 
