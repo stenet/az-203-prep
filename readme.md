@@ -205,6 +205,7 @@ Set-AzVMDiskEncryptionExtension `
 Die nachfolgende Grafik zeigt den Ablauf bei Verwendung von Azure Batch.
 
 ![Überblick Azure Batch](images/az_batch_overview.png)
+
 [https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview](https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview)
 
 Mit Hilfe von Azure Batch können aufwändige Operationen, die sich in parallel abarbeiten lassen, optimal und schnell durchführen. Im Batch Account werden Pools definiert. Der Pool definiert welches Betriebssystem verwendet werden soll, wie groß die Nodes sein sollen, wie sich die Skalierung verhalten soll, wie viele Nodes es geben soll, wie viele Tasks parallel auf einer Node ausgeführt werden können, die zu installierende Applikation, Netzwerk, usw.
@@ -329,6 +330,7 @@ Dies wurde bereits zuvor behandelt ;-)
 Einführend ein paar Worte zu Kubernetes (K8s). Dies wurde 2014 von Google als Open-Source-Projekt veröffentlicht. Sinn von K8s ist die Orchestrierung und Überwachung von Containern. 
 
 ![Überblick K8s](images/az_aks_k8s.png)
+
 [https://de.wikipedia.org/wiki/Kubernetes](https://de.wikipedia.org/wiki/Kubernetes)
 
 Wie man in der Grafik oben sieht gibt es einen Master (könnten auch mehrere sein) und mehrere Nodes. Der Master steuert den Cluster. Innerhalb einer Node arbeiten Pods (Arbeitsprozesse). Innerhalb eines Pods laufen ein oder mehrere Container.
@@ -566,6 +568,7 @@ Das Beispiel habe ich mit der Azure CLI gemacht, da das PowerShell Cmdlet keine 
 Azure Monitor ist das zentrale Monitoring Tool, das Telemetriedaten aus Azure-Ressourcen aber auch aus lokalen Prozessen sammelt und visualisiert.
 
 ![Überblick K8s](images/az_monitor_overview.jpg)
+
 [https://azure.microsoft.com/de-de/services/monitor/](https://azure.microsoft.com/de-de/services/monitor/)
 
 Zusätzlich werden Daten aggregiert. Mit Alerts können bei eintreten von bestimmten Bedingungen Personen z.B. per Email oder SMS informiert oder sonstige Aktionen (Azure Function, Azure LogicApp, ...) ausgelöst werden. 
@@ -671,6 +674,7 @@ Diese werden am einfachsten mit Visual Studio Code erstellt. Folgende weiteren D
 Anschließend kann Function mit Hilfe von VSCode erstellt und veröffentlicht werden.
 
 ![Azure Function Pyhton](images/az_functions_py.png)
+
 [https://docs.microsoft.com/en-us/azure/python/tutorial-vs-code-serverless-python-02](https://docs.microsoft.com/en-us/azure/python/tutorial-vs-code-serverless-python-02)
 
 ## Develop for Azure storage
