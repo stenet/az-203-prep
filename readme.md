@@ -629,13 +629,49 @@ Wird die Function im Azure Portal erstellt, dann fallen die Attribute wie "Funct
 
 #### implement Azure Durable Functions
 
-Normale Azure Functions sind stateless. Dies bedeutet, dass diese ausgeführt werden und fertig. Mit Durable Functions verhält es sich leicht anders. Diese haben die Möglichkeit andere Azure Functions aufzurufen (inkl. Ergebnisabfrage) sowie Events zu senden und zu erwarten. Dabei kann die Durable Function auch längere Zeit in einem Wartemodus verharren. 
+Normale Azure Functions sind stateless. Dies bedeutet, dass diese ausgeführt werden und fertig. Mit Durable Functions verhält es sich leicht anders. Diese haben u.a. die Möglichkeit andere Azure Functions aufzurufen (inkl. Ergebnisabfrage) und auf Events zu erwarten. Dabei kann die Durable Function auch längere Zeit in einem Wartemodus verharren. 
 
-Als Beispiel hierfür gibt es unter [https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-phone-verification](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-phone-verification) den Code für den Versand einer Verifizierungs-SMS, die vom Benutzer bestätigt werden muss.
+```csharp
+[FunctionName("Chaining")]
+public static async Task<object> Run([OrchestrationTrigger] IDurableOrchestrationContext context)
+{
+    try
+    {
+        var x = await context.CallActivityAsync<object>("F1", null);
+        var y = await context.CallActivityAsync<object>("F2", x);
+        var z = await context.CallActivityAsync<object>("F3", y);
+        return  await context.CallActivityAsync<object>("F4", z);
+    }
+    catch (Exception)
+    {
+        // Error handling or compensation goes here.
+    }
+}
+```
+
+Im Vergleich zu normalen Azure Functions ist der Rückgabewert bei Durable Functions ein Task. Weiters ist ein Parameter vom Type IDurableOrchestrationContext mit dem OrchestrationTriggerAttribute vorhanden. Im oberen Code werden die Funktionen F1 bis F4 hintereinander aufgerufen, wobei immer das Ergebnis der einen Funktion der nächsten Übergeben wird.
+
+Ein anderes, sehr interessantes Beispiel gibt es unter [https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-phone-verification](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-phone-verification). Hier geht es um den Versand einer Verifizierungs-SMS, die vom Benutzer bestätigt werden muss.
 
 #### create Azure Function apps by using Visual Studio
 
+Um Azure Function apps in Visual Studio erstellen zu können, muss bei der Installation von Visual Studio der "Azure Development" Workload installiert werden.
+
+Bei der Erstellung des VS-Projektes das "Azure Functions"-Template auswählen.
+
+Wenn die Function fertig programmiert ist, kann sie mittels "Publish" in Azure publiziert werden.
+
 #### implement Python Azure functions
+
+Diese werden am einfachsten mit Visual Studio Code erstellt. Folgende weiteren Dinge sollten installiert sein:
+
+* Azure Functions Core Tools
+* Azure Function extension in VSCode
+
+Anschließend kann Function mit Hilfe von VSCode erstellt und veröffentlicht werden.
+
+![Azure Function Pyhton](images/az_functions_py.png)
+[https://docs.microsoft.com/en-us/azure/python/tutorial-vs-code-serverless-python-02](https://docs.microsoft.com/en-us/azure/python/tutorial-vs-code-serverless-python-02)
 
 ## Develop for Azure storage
 
