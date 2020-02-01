@@ -1132,7 +1132,15 @@ Das war es auf der Azure-Seite. Jetzt zum Client Code. Der Connection-String wir
 
 #### implement multi-factor or Windows authentication by using Azure AD
 
+Dafür habe ich keine Rechte.
+
 #### implement OAuth2 authentication
+
+Die nachfolgende Grafik veranschaulicht den Ablauf bei OAuth2.
+
+![OAuth 2](images/az_security_oauth2.png)
+
+[https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code)
 
 #### implement Managend identities/Service Principal authentication
 
