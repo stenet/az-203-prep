@@ -696,11 +696,11 @@ Neben shared access signatures (SAS) gibt es serverseitig noch stored access pol
 * Queues
 * Tables
 
-Sowohl SAS als auch Policies können gemeinsam verwendet werden, allerdings darf Startzeit, Endezeit und Berechtigung jeweils nur auf einem Element gesetzt werden.
+Bei der Erstellung eines SAS kann entweder die Berechtigung direkt angegeben werden, oder auf eine Policy verwiesen werden. Der Vorteil beim Verweis auf die Policy ist, dass diese im Nachhinein geändert oder gelöscht werden kann, wodurch die Rechte entzogen werden. Da eine SAS nur eine Signatur ist, die serverseitig nicht gespeichert ist, ist diese so lange gültig, wie beim Erstellen definiert wurde.
 
-Das setzen einer Policy kann bis zu 30 Sekunden dauern, wodurch der Einsatz bei punktuellen Freigaben für Benutzer nicht sinnvoll ist und SAS verwendet werden sollte.
+Wichtig: das Erstellen einer Policy kann bis zu 30 Sekunden dauern!
 
-Nachfolgend ein komplettes Beispiel für das Erstellen eines Storage-Accounts, eines Containers, hochladen einer Datei und stored access policy für den Container.
+Nachfolgend der Code für das Erstellen eines Storage-Accounts, eines Containers und für das Hochladen einer Datei.
 
 ```powershell
 $storage = New-AzStorageAccount `
@@ -722,7 +722,7 @@ $file = Set-AzStorageBlobContent `
 $file.ICloudBlob.Uri.AbsoluteUri
 ```
 
-Damit haben wir die Datei Bild.jpg hochgeladen. Nicht angemeldete Benutzer haben jetzt allerdings keine Rechte darauf zuzugreifen.
+Damit haben wir die Datei Bild.jpg hochgeladen. Allerdings hat niemand Rechte die Datei zu laden.
 
 Bei den Berechtigungen stehen folgende Werte zur Auswahl:
 
@@ -739,21 +739,48 @@ New-AzStorageContainerStoredAccessPolicy `
   -Permission r `
   -ExpiryTime 2020-02-02 `
   -Policy perm01
+
+$sas = New-AzStorageContainerSASToken `
+  -Context $storage.Context `
+  -Container container01 `
+  -Policy perm01
+
+$file.ICloudBlob.Uri.AbsoluteUri + $sas
 ```
 
-Alternativ kann auch eine SAS erstellt werden:
+Alternativ kann ein SAS Token ohne Referenz auf eine Policy erstellt werden:
 
 ```powershell
-$sas = New-AzStorageContainerSASToken `
+$sas2 = New-AzStorageContainerSASToken `
   -Context $storage.Context `
   -Container container01 `
   -Permission r `
   -ExpiryTime 2020-02-02
 
-$file.ICloudBlob.Uri.AbsoluteUri + $sas
+$file.ICloudBlob.Uri.AbsoluteUri + $sas2
 ```
 
 #### query table storage by using code
+
+Als erstes erstellen wir einen neuen Table-Storage inkl. vollen Berechtigungen für alle (was man natürlich im produktiven Umfeld nie machen würde ...):
+
+```powershell
+$storage = New-AzStorageAccount `
+  -ResourceGroupName TestRG `
+  -Name storage202002012 `
+  -Location "West Europe" `
+  -SkuName Standard_LRS
+
+New-AzStorageTable `
+  -Context $storage.Context `
+  -Name table01
+
+New-AzStorageTableStoredAccessPolicy `
+  -Context $storage.Context `
+  -Table table01 `
+  -Permission raud `
+  -Policy perm01
+```
 
 #### implement partitioning schemes
 
