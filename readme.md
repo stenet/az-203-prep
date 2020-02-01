@@ -912,7 +912,7 @@ siehe Table Storage ...
 Cosmos DB unterscheidet 5 Konsistenzebenen (in absteigender Reihenfolge):
 
 * Strong - es wird IMMER die aktuellste Version eines Datensatzes, für den ein Commit ausgeführt wurde, zurückgeliefert. Dies geht aber mitunter zu Lasten der Performance.
-* Blouded-Staleness - hierbei werden Dirty Reads toleriert. Es kann konfiguriert werden, dass diese Daten nicht mehr als x Dauer oder x Versionen in der Vergangenheit liegen darf.
+* Bounded-Staleness - hierbei werden Dirty Reads toleriert. Es kann konfiguriert werden, dass diese Daten nicht mehr als x Dauer oder x Versionen in der Vergangenheit liegen darf.
 * Session (Default) - ein "Writer" hat den Konsistenzlevel strong, für andere sind Dirty Reads möglich.
 * Consistent Prefix - Dirty Reads sind immer möglich. Allerdings werden zumindest immer die Daten retourniert, die komplett repliziert wurden und das in der richtigen Reihenfolge
 * Eventual - auf gut Deutsch: es kommt was grad da ist ;-)
