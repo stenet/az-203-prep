@@ -998,13 +998,108 @@ Das erstellen ist aber soweit ich sehe nicht anders als bei einer anderen Datenb
 
 #### move items in Blob storage between storage accounts or container
 
+```powershell
+$storage = New-AzStorageAccount `
+  -ResourceGroupName TestRG `
+  -Name storage20200201 `
+  -Location "West Europe" `
+  -SkuName Standard_LRS
+
+New-AzStorageContainer `
+  -Context $storage.Context `
+  -Name container01 `
+  -Permission Off
+
+New-AzStorageContainer `
+  -Context $storage.Context `
+  -Name container02 `
+  -Permission Off
+
+$file = Set-AzStorageBlobContent `
+  -Context $storage.Context `
+  -Container container01 `
+  -File c:\temp\bild.jpg
+
+Start-AzStorageBlobCopy `
+  -Context $storage.Context `
+  -SrcContainer container01 `
+  -SrcBlob bild.jpg `
+  -DestContext $storage.Context `
+  -DestContainer container02
+
+Remove-AzStorageBlob `
+  -Context $storage.Context `
+  -Container container01 `
+  -Blob bild.jpg
+```
+
 #### set and retrieve properties and metadata
+
+```powershell
+$storage = New-AzStorageAccount `
+  -ResourceGroupName TestRG `
+  -Name storage20200201 `
+  -Location "West Europe" `
+  -SkuName Standard_LRS
+
+New-AzStorageContainer `
+  -Context $storage.Context `
+  -Name container01 `
+  -Permission Off
+
+$file = Set-AzStorageBlobContent `
+  -Context $storage.Context `
+  -Container container01 `
+  -File c:\temp\bild.jpg
+
+$file.ICloudBlob.Metadata.Add("Name", "Müller")
+$file.ICloudBlob.SetMetadata()
+```
 
 #### implement blob leasing
 
+Mit Leasing können Blob für Schreib- und Löschvorgänge für Benutzer, die keinen Lease besitzen, gesperrt werden.
+
+Es gibt 5 Lease-Operationen:
+
+* Aquire - einen neuen Lease anfragen
+* Renew - bestehenden Lease erneuern
+* Change - ID des bestehenden Lease ändern
+* Release - Lease freigeben
+* Break - Lease beenden, aber solange gesperrt lassen, bis der Lease abgelaufen wäre
+
+```powershell
+$storage = New-AzStorageAccount `
+  -ResourceGroupName TestRG `
+  -Name storage20200201 `
+  -Location "West Europe" `
+  -SkuName Standard_LRS
+
+New-AzStorageContainer `
+  -Context $storage.Context `
+  -Name container01 `
+  -Permission Off
+
+$file = Set-AzStorageBlobContent `
+  -Context $storage.Context `
+  -Container container01 `
+  -File c:\temp\bild.jpg
+
+$file.ICloudBlob.Properties.LeaseStatus  
+
+$lease = $file.ICloudBlob.AcquireLease($null, $null, $null, $null, $null)
+$file.ICloudBlob.ReleaseLease(@{LeaseId = $lease}, $null, $null)
+
+$file.ICloudBlob.BreakLease()
+```
+
 #### implement data archiving and retention
 
+Innerhalb eines Storage Account können im Bereich "Lifecycle Management" Regeln definiert werden, dass Blob nach einem bestimmten Zeitraum verschoben oder gelöscht werden sollen.
+
 #### implement Geo Zone Redundant storage
+
+Bei der Erstellung des Storage Accounts bei "Replication" GRS oder RA-GRS auswählen bzw. zu einem späteren Zeitpunkt ändern ;-) 
 
 ## Implement Azure Security
 
