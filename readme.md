@@ -931,7 +931,7 @@ Der Konsistenzlevel kann je Client oder Request geändert werden, allerdings nur
 
 #### provision and configure Azure SQL Database serverless instances
 
-#### provision and configure Azure SQL and Azure PostgreSQL Hyperscale instaces
+#### provision and configure Azure SQL and Azure PostgreSQL Hyperscale instances
 
 ### Develop solutions that use blob storage
 
