@@ -349,7 +349,7 @@ Anschließend wird angezeigt, dass der Ort, an dem die CLI installiert wurde, in
 $env:Path += "DER_PFAD_VON_OBEN"
 ```
 
-So dann können wir einen Kubernetes Cluster erzeugen. Falls noch kein ssh-key erstellt wurde, muss dies zuerst gemacht werden.
+Dann kann der Kubernetes Cluster erzeugt werden. Falls noch kein ssh-key erstellt wurde, muss dies zuerst gemacht werden.
 
 ```powershell
 ssh-keygen
@@ -371,13 +371,13 @@ Anschließend muss mit der Azure CLI der Kontext für kubectl gesetzt werden. Di
 az aks get-credentials --resource-group TestRG --name TestAKS
 ```
 
-Jetzt können wir den Status der Nodes überprüfen:
+Um den Status der Node zu überprüfen:
 
 ```bash
 kubectl get nodes
 ```
 
-Und schon haben wir wir einen K8s-Cluster. Jetzt können wir ein Image darauf laufen lassen. Dafür benötigen wir eine yaml-Datei mit den Instruktionen für K8s.
+Der Cluster steht und jetzt werden die Container aktiviert. Dafür wird eine yaml-Datei benötigt.
 
 Beispiel für eine yaml-Datei, die einen nginx mit 2 Replikas erstellt:
 
@@ -439,7 +439,7 @@ az aks browse --resource-group TestRG --name TestAKS
 
 #### create container images for solutions
 
-Jetzt erstellen wir ein eigenes Docker-Image :-) Der Code befindet sich im Unterordner custom-nginx inkl. dem nachfolgenden Dockerfile.
+Als nächstes wird ein Docker-Image erstellt :-) Der Code befindet sich im Unterordner custom-nginx inkl. dem nachfolgenden Dockerfile.
 
 ```dockerfile
 FROM nginx
@@ -724,7 +724,7 @@ $file = Set-AzStorageBlobContent `
 $file.ICloudBlob.Uri.AbsoluteUri
 ```
 
-Damit haben wir die Datei Bild.jpg hochgeladen. Allerdings hat niemand Rechte die Datei zu laden.
+Die Bild.jpg Datei ist jetzt hochgeladen. Allerdings hat niemand Rechte die Datei zu laden.
 
 Bei den Berechtigungen stehen folgende Werte zur Auswahl:
 
@@ -764,7 +764,7 @@ $file.ICloudBlob.Uri.AbsoluteUri + $sas2
 
 #### query table storage by using code
 
-Als erstes erstellen wir einen neuen Table-Storage inkl. vollen Berechtigungen für alle (was man natürlich im produktiven Umfeld nie machen würde ...):
+Nachfolgend wird ein neuer Table-Storage inkl. vollen Berechtigungen für alle (was man natürlich im produktiven Umfeld nie machen würde ...) erstellt:
 
 ```powershell
 $storage = New-AzStorageAccount `
@@ -923,15 +923,76 @@ Der Konsistenzlevel kann je Client oder Request geändert werden, allerdings nur
 
 ### Develop solutions that use relational database
 
+In Azure gibt es mehrere Möglichkeiten eine SQL-Datenbank zu erstellen:
+
+* klassisch einen virtuellen Server mit einer SQL-Server-Instanz
+* SQL Database Managed Instance
+* SQL Database
+
+Einer der Vorteile bei den zwei zuletzt genannten ist, dass sich Microsoft um die Patches und neuen Versionen kümmert.
+
 #### provision and configure relational databases
+
+```powershell
+New-AzSqlServer `
+  -ResourceGroupName TestRG `
+  -Location "West Europe" `
+  -ServerName sql20200203
+
+New-AzSqlServerFirewallRule `
+  -ResourceGroupName TestRG `
+  -ServerName sql20200203 `
+  -FirewallRuleName fw01 `
+  -StartIpAddress 0.0.0.0 `
+  -EndIpAddress 0.0.0.0
+
+New-AzSqlDatabase `
+  -ResourceGroupName TestRG `
+  -ServerName sql20200203 `
+  -DatabaseName sql `
+  -RequestedServiceObjectiveName S2 
+```
 
 #### configure elastic pools for Azure SQL Database
 
+Ein elastischer Pool ermöglicht es z.B. zusätzliche DTUs zu reservieren und diese mehreren SQL-Datenbanken zuzuweisen. Damit können ev. Spitzen in einzelnen Datenbanken durch den Pool ausgeglichen werden.
+
+Nachfolgend wird ein Pool erstellt und der zuvor erstellten Datenbank zugewiesen.
+
+```powershell
+New-AzSqlElasticPool `
+  -ResourceGroupName TestRG `
+  -ElasticPoolName pool01 `
+  -ServerName sql20200203 `
+  -Dtu 50
+
+Set-AzSqlDatabase `
+  -ResourceGroupName TestRG `
+  -ServerName sql20200203 `
+  -DatabaseName sql `
+  -ElasticPoolName pool01  
+```
+
 #### create, read, update, and delete tables by using code
+
+zu Basic ;-)
 
 #### provision and configure Azure SQL Database serverless instances
 
+wurde weiter oben schon behandelt ...
+
 #### provision and configure Azure SQL and Azure PostgreSQL Hyperscale instances
+
+Die Hyperscale Editionen sind die Luxuseditionen für gehobene Ansprüche ;-)
+
+* bis 100TB Datenbankgröße
+* nahezu Echtzeit Backups
+* schnelles Wiederherstellen von Datenbanken (Minuten statt Stunden)
+* Mega Performance
+* schnelles Scale out + up
+* ziemlich teuer (startet bei € 440 für die kleinste Edition und geht bis knapp € 18.000 pro Monat)
+
+Das erstellen ist aber soweit ich sehe nicht anders als bei einer anderen Datenbank.
 
 ### Develop solutions that use blob storage
 
