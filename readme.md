@@ -1107,6 +1107,29 @@ Bei der Erstellung des Storage Accounts bei "Replication" GRS oder RA-GRS auswä
 
 #### implement authentication by using certificates, forms-based authentication, or tokens
 
+Benutzer und Passwort sind ja ziemlich out. Daher kommt jetzt ein Beispiel, wie sich eine Anwendung mittels eines lokal installierten Zertifikates anmelden kann. Das folgende Skript muss in der "normalen" PowerShell (also nicht Core) ausgeführt werden. Es erstellt ein Zertifikat und eine "test.cer"-Datei.
+
+```powershell
+$cert = New-SelfSignedCertificate -CertStoreLocation cert:\CurrentUser\My -Subject "CN=test" -KeySpec KeyExchange
+
+$out = New-Object String[] -ArgumentList 3
+$OutputFile = ".\test.CER"
+ 
+$out[0] = "-----BEGIN CERTIFICATE-----"
+$out[1] = [System.Convert]::ToBase64String($cert.GetRawCertData(), "InsertLineBreaks")  
+$out[2] = "-----END CERTIFICATE-----"
+ 
+$out > test.cer
+```
+
+Im Azure Portal unter "Azure Active Directory" > "App registrations" eine neue Registrierung machen und unter "Certificates & secrets" die zuvor erstellte "test.cer"-Datei hochladen. Als nächstes im SQL-Server die registrierte App als Benutzer hinzufügen (Access control (IAM)). Danach im Portal in die Datenbank wechseln, auf die die Rechte gewährt werden sollen und Query Editor öffnen. Hier muss die AD-Authentifizierung verwendet werden! Dort dann den folgenden Befehl eingeben:
+
+```
+CREATE USER [WIE_AUCH_IMMER_ICH_DIE_APP_BENANNT_HABE] FROM EXTERNAL PROVIDER
+```
+
+Das war es auf der Azure-Seite. Jetzt zum Client Code. Der Connection-String wird ohne UserId und Passwort erstellt. Stattdessen wird ein AccessToken erstellt und in der SqlConnection zugewiesen. Der Code zum Erstellen des AccessTokens liegt unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzSqlAccessToken](https://github.com/stenet/az-203-prep/tree/master/vs/AzSqlAccessToken).
+
 #### implement multi-factor or Windows authentication by using Azure AD
 
 #### implement OAuth2 authentication
