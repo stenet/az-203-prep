@@ -630,6 +630,8 @@ Wird die Function im Azure Portal erstellt, dann fallen die Attribute wie "Funct
 
 #### implement function triggers by using data operations, timers, and webhooks
 
+TODO
+
 #### implement Azure Durable Functions
 
 Normale Azure Functions sind stateless. Dies bedeutet, dass diese ausgeführt werden und fertig. Mit Durable Functions verhält es sich leicht anders. Diese haben u.a. die Möglichkeit andere Azure Functions aufzurufen (inkl. Ergebnisabfrage) und auf Events zu erwarten. Dabei kann die Durable Function auch längere Zeit in einem Wartemodus verharren. 
@@ -682,6 +684,70 @@ Anschließend kann Function mit Hilfe von VSCode erstellt und veröffentlicht we
 ### Develop solutions that use storage tables
 
 #### design and implement policies for tables
+
+Neben shared access signatures (SAS) gibt es serverseitig noch stored access policies. Damit können Startzeit, Endezeit und/oder Berechtigungen gesetzt werden. Folgende Storage-Ressourcen werden unterstützt:
+
+* Blob containers
+* File shares
+* Queues
+* Tables
+
+Sowohl SAS als auch Policies können gemeinsam verwendet werden, allerdings darf Startzeit, Endezeit und Berechtigung jeweils nur auf einem Element gesetzt werden.
+
+Das setzen einer Policy kann bis zu 30 Sekunden dauern, wodurch der Einsatz bei punktuellen Freigaben für Benutzer nicht sinnvoll ist und SAS verwendet werden sollte.
+
+Nachfolgend ein komplettes Beispiel für das Erstellen eines Storage-Accounts, eines Containers, hochladen einer Datei und stored access policy für den Container.
+
+```powershell
+$storage = New-AzStorageAccount `
+  -ResourceGroupName TestRG `
+  -Name storage20200201 `
+  -Location "West Europe" `
+  -SkuName Standard_LRS
+
+New-AzStorageContainer `
+  -Context $storage.Context `
+  -Name container01 `
+  -Permission Off
+
+$file = Set-AzStorageBlobContent `
+  -Context $storage.Context `
+  -Container container01 `
+  -File c:\temp\bild.jpg
+
+$file.ICloudBlob.Uri.AbsoluteUri
+```
+
+Damit haben wir die Datei Bild.jpg hochgeladen. Nicht angemeldete Benutzer haben jetzt allerdings keine Rechte darauf zuzugreifen.
+
+Bei den Berechtigungen stehen folgende Werte zur Auswahl:
+
+* off - privat, keine Berechtigung
+* blog - öffentliche Leseberechtigung für Blobs
+* container - öffentliche Leseberechtigung für Container inkl. ermitteln aller Blogs im Container
+
+Nachfolgend der Code zum Erstellen einer stored access policy:
+
+```powershell
+New-AzStorageContainerStoredAccessPolicy `
+  -Context $storage.Context `
+  -Container container01 `
+  -Permission r `
+  -ExpiryTime 2020-02-02 `
+  -Policy perm01
+```
+
+Alternativ kann auch eine SAS erstellt werden:
+
+```powershell
+$sas = New-AzStorageContainerSASToken `
+  -Context $storage.Context `
+  -Container container01 `
+  -Permission r `
+  -ExpiryTime 2020-02-02
+
+$file.ICloudBlob.Uri.AbsoluteUri + $sas
+```
 
 #### query table storage by using code
 
