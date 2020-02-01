@@ -53,6 +53,11 @@ Daher bevorzuge ich PowerShell, da ich dort mittels Strg+Leertaste oder Tab eine
 
 Jede Ressource, die in Azure erstellt wird, wird einer Ressourcengruppe zugeordnet. Dies hat u.a. den Vorteil, dass diese bei der Abrechnung speziell ausgewertet werden können und auch, dass eine Ressourcengruppe als gesamtes gelöscht werden kann, was beim Testen von einzelnen Ressourcen sehr vorteilhaft ist.
 
+
+### Links
+
+* https://webhook.site - erstellt einen Endpunkt
+
 ## Develop Azure Infrastructure as a Service compute solution
 
 ### Implement solutions that use virtual machines (VM)
@@ -1141,6 +1146,41 @@ Die nachfolgende Grafik veranschaulicht den Ablauf bei OAuth2.
 ![OAuth 2](images/az_security_oauth2.png)
 
 [https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code)
+
+Grundlage für den weiteren Ablauf ist die App Registrierung vom vorherigen Beispiel.
+
+Als erstes muss, wie in der Grafik ersichtlich, eine Authorization-Code ermittelt werden. Hierfür den Benutzer auf folgende Seite weiterleiten:
+
+https://login.microsoftonline.com/{ID_TENANT}/oauth2/authorize?client_id={ID_APPLICATION}ad&response_type=code&state={IRGENDWAS_WENN_MAN_WILL}
+
+Der Benutzer gibt dort seine Credentials ein und gewährt den Zugriff auf die benötigten Daten. Anschließend wird er auf die Redirect URI in der App Registrierung weitergeleitet. In der Weiterleitung sind die Query Parameter "code" und "session_state".
+
+Nun muss ein Post-Request an folgende Adresse gemacht werden:
+
+https://login.microsoftonline.com/{ID_TENANT}/oauth2/token
+
+Zusätzlich müssen die folgende Parameter als x-www-form-urlencoded übermittelt werden (JSON geht zumindest bei mir nicht ...):
+
+* grant_type - "authorization_code"
+* client_id - ID_APPLICATION
+* client_secret - Secret in der App Registrierung unter "Certificates & secrets" bei "Client secrets"
+* code - den Code, wenn wir vorher erhalten haben
+
+Das Ergebnis ist ein JSON mit u.a. folgenden Werten:
+
+* access_token
+* refresh_token
+* id_token
+* expires_on
+
+Bei zukünftigen Abfragen wird der Access-Token im Authorization-Header mit dem Wewrt "Bearer {ACCESS_TOKEN}".
+
+Um einen neuen Access-Token mit Hilfe des Refresh-Tokens zu erstellen, muss der gleiche Request wie zuvor abgesendet werden, aber mit folgenden Parametern:
+
+* grant_type - "refresh_token"
+* client_id - ID_APPLICATION
+* client_secret - Secret in der App Registrierung unter "Certificates & secrets" bei "Client secrets"
+* refresh_token - Refresh Token von vorher
 
 #### implement Managend identities/Service Principal authentication
 
