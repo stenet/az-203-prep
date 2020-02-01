@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AzCosmosDB": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "development"
+      }
+    }
+  }
+}

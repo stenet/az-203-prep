@@ -6,6 +6,8 @@ Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinun
 
 Für die Verwaltung von Subscriptions, Ressourcegruppen oder Ressourcen kann mit Hilfe des Azure Portals, der Azure CLI, Powershell, SDKs oder direkt per REST gemacht werden. Aufgrund der Wiederverwendbarkeit ist das Azure Portal nur bedingt empfehlenswert.
 
+Viele meiner Recherchen habe ich von [https://melcher.dev/2019/01/az-203-learning-material-/-link-collection/](https://melcher.dev/2019/01/az-203-learning-material-/-link-collection/), wo netterweise die Links zu den Detailseiten von Microsoft oder anderen gesammelt sind.
+
 ## Allgemeines
 
 ### PowerShell
@@ -771,26 +773,153 @@ $storage = New-AzStorageAccount `
   -Location "West Europe" `
   -SkuName Standard_LRS
 
-New-AzStorageTable `
+$table = New-AzStorageTable `
   -Context $storage.Context `
   -Name table01
 
-New-AzStorageTableStoredAccessPolicy `
+$sas = New-AzStorageTableSASToken `
   -Context $storage.Context `
   -Table table01 `
-  -Permission raud `
-  -Policy perm01
+  -Permission radu
+
+$table.Uri.AbsoluteUri + $sas
+```
+
+Mit einem GET-Request auf die URL, die das obige Skript erstellt, kann der Table Storage abgefragt werden. Standardmäßig kommen die Ergebnisse in XML zurück. Um JSON zu erhalten, muss der Accept-Header mit "application/json" hinzugefügt werden. Aus OData werden die folgenden Abfrageoptionen unterstützt:
+
+* $filter
+* $top
+* $select
+
+Mit einem POST-Request können Daten hinzugefügt werden. Dabei ist zu beachten, dass PartionKey und RowKey immer angegeben werden müssen!
+
+#### implement partitioning schemes
+
+Beim vorherigen Punkt wurde schon einmal der PartitionKey erwähnt. Dieser spielt beim Table Storage und auch Cosmos DB eine ganze entscheidende Rolle.
+
+Partitionen sind wichtig für die Skalierbarkeit und Performance. Unterschiedliche Partitionen können auf unterschiedliche Host-Systeme verteilt werden.
+
+Es gibt drei Standard-Strategien für das partitionieren von Daten:
+
+* horizontal (sharding) - jede Partition ist eine separate "Datenbank", aber alle Partitionen haben das gleiche Schema. Die Daten werden somit in Gruppen unterteilt (z.B. Land oder Benutzer).
+* vertikal - im Vergleich zu horizontal werden hierbei keine Gruppen gebildet, sondern die Datensätze werden auseinander genommen. Oft benötigte Felder sind in einer Partition, nicht oft verwendete in einer anderen.
+* functional - hierbei werden Daten aggregiert und nach benötigten Kontexten aufgebaut.
+
+Ein paar Punkte als Entscheidungshilfe:
+
+* Cross-Partitionszugriffe sollten vermieden werden (ev. im Notfall Daten redundant speichern)
+* es sollte nicht so sein, dass eine Partition 95 % der Daten enthält und der Rest in anderen Partionen liegt
+
+Der Table Storage unterstützt nur den Index PartitionKey + RowKey. Cosmos DB mit der Table Storage API erstellt Indexe automatisch bei Bedarf.
+
+### Develop solutions that use Cosmos DB storage
+
+Cosmos DB ist eine global verteilte, Multi-Model, No-SQL Datenbank. Es werden folgende APIs unterstützt:
+
+* SQL
+* MongoDB
+* Casandara
+* Table Storage
+* Gremlin
+
+#### create, read, update, and delete data by using appropriate APIs
+
+Zuerst einen Cosmos DB Account erstellen:
+
+```powershell
+az cosmosdb create `
+  -g TestRG `
+  -n cosmos20200201
+```
+
+Im Visual Studio-Projekt das NuGet-Paket Microsoft.Azure.DocumentDB.Core hinzufügen. Der untere Code befindet sich in [https://github.com/stenet/az-203-prep/tree/master/vs/AzuCosmosDB](https://github.com/stenet/az-203-prep/tree/master/vs/AzuCosmosDB).
+
+```csharp
+var client = new DocumentClient(new Uri(endpoint), key);
+
+var databaseLink = UriFactory.CreateDatabaseUri(DATABASE_ID);
+var collectionLink = UriFactory.CreateDocumentCollectionUri(DATABASE_ID, COLLECTION_ID);
+
+var database = await client.CreateDatabaseIfNotExistsAsync(new Database()
+{
+    Id = DATABASE_ID
+});
+
+var collection = new DocumentCollection()
+{
+    Id = COLLECTION_ID
+};
+
+collection.PartitionKey.Paths.Add("/Country");
+collection = await client.CreateDocumentCollectionIfNotExistsAsync(databaseLink, collection);
+
+var person1 = new Person("A", "A", "AT");
+await client.UpsertDocumentAsync(collectionLink, person1);
+
+var person2 = new Person("B", "B", "AT");
+await client.UpsertDocumentAsync(collectionLink, person2);
+
+var person3 = new Person("C", "C", "AT");
+await client.UpsertDocumentAsync(collectionLink, person3);
+
+var person4 = new Person("D", "D", "DE");
+await client.UpsertDocumentAsync(collectionLink, person4);
+
+var allPersonList = client
+    .CreateDocumentQuery<Person>(collectionLink)
+    .ToList();
+
+var personWithFirstNameDList = client
+    .CreateDocumentQuery<Person>(collectionLink, new FeedOptions()
+    {
+        EnableCrossPartitionQuery = true
+    })
+    .Where(c => c.FirstName == "D")
+    .ToList();
+
+
+foreach (var item in personWithFirstNameDList)
+{
+    item.FirstName = "DD";
+
+    await client.ReplaceDocumentAsync(
+        UriFactory.CreateDocumentUri(DATABASE_ID, COLLECTION_ID, item.Id),
+        item,
+        new RequestOptions() { PartitionKey = new PartitionKey(item.Country) });
+}
+
+var personWithPartitionKeyATList = client
+    .CreateDocumentQuery<Person>(collectionLink, new FeedOptions()
+    {
+        PartitionKey = new PartitionKey("AT")
+    })
+    .ToList();
+
+foreach (var item in personWithPartitionKeyATList)
+{
+    await client.DeleteDocumentAsync(
+        UriFactory.CreateDocumentUri(DATABASE_ID, COLLECTION_ID, item.Id),
+        new RequestOptions() { PartitionKey = new PartitionKey(item.Country) });
+}
 ```
 
 #### implement partitioning schemes
 
-### Develop solutions that use Cosmos DB storage
-
-#### create, read, update, and delete data by using appropriate APIs
-
-#### implement partitioning schemes
+siehe Table Storage ...
 
 #### set the appropriate consistency level for operations
+
+Cosmos DB unterscheidet 5 Konsistenzebenen (in absteigender Reihenfolge):
+
+* Strong - es wird IMMER die aktuellste Version eines Datensatzes, für den ein Commit ausgeführt wurde, zurückgeliefert. Dies geht aber mitunter zu Lasten der Performance.
+* Blouded-Staleness - hierbei werden Dirty Reads toleriert. Es kann konfiguriert werden, dass diese Daten nicht mehr als x Dauer oder x Versionen in der Vergangenheit liegen darf.
+* Session (Default) - ein "Writer" hat den Konsistenzlevel strong, für andere sind Dirty Reads möglich.
+* Consistent Prefix - Dirty Reads sind immer möglich. Allerdings werden zumindest immer die Daten retourniert, die komplett repliziert wurden und das in der richtigen Reihenfolge
+* Eventual - auf gut Deutsch: es kommt was grad da ist ;-)
+
+Diese spielen primär dann eine Rolle, wenn Daten georepliziert (gibt es das Wort?) wurden.
+
+Der Konsistenzlevel kann je Client oder Request geändert werden, allerdings nur zu einem Schwächeren als dem der als Standard definiert ist.
 
 ### Develop solutions that use relational database
 
