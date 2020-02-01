@@ -666,6 +666,8 @@ Bei der Erstellung des VS-Projektes das "Azure Functions"-Template auswählen.
 
 Wenn die Function fertig programmiert ist, kann sie mittels "Publish" in Azure publiziert werden.
 
+Ein Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzuFunctionApp](https://github.com/stenet/az-203-prep/tree/master/vs/AzuFunctionApp).
+
 #### implement Python Azure functions
 
 Diese werden am einfachsten mit Visual Studio Code erstellt. Folgende weiteren Dinge sollten installiert sein:
@@ -674,6 +676,8 @@ Diese werden am einfachsten mit Visual Studio Code erstellt. Folgende weiteren D
 * Azure Function extension in VSCode
 
 Anschließend kann Function mit Hilfe von VSCode erstellt und veröffentlicht werden.
+
+Ein Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzuFunctionAppPy](https://github.com/stenet/az-203-prep/tree/master/vs/AzuFunctionAppPy).
 
 ![Azure Function Pyhton](images/az_functions_py.png)
 
