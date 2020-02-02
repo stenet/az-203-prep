@@ -1130,7 +1130,7 @@ $out[2] = "-----END CERTIFICATE-----"
 $out > test.cer
 ```
 
-Im Azure Portal unter "Azure Active Directory" > "App registrations" eine neue Registrierung machen und unter "Certificates & secrets" die zuvor erstellte "test.cer"-Datei hochladen. Als nächstes im SQL-Server die registrierte App als Benutzer hinzufügen (Access control (IAM)). Danach im Portal in die Datenbank wechseln, auf die die Rechte gewährt werden sollen und Query Editor öffnen. Hier muss die AD-Authentifizierung verwendet werden! Dort dann den folgenden Befehl eingeben:
+Im Azure Portal unter "Azure Active Directory" => "App registrations" eine neue Registrierung machen und unter "Certificates & secrets" die zuvor erstellte "test.cer"-Datei hochladen. Als nächstes im SQL-Server die registrierte App als Benutzer hinzufügen (Access control (IAM)). Danach im Portal in die Datenbank wechseln, auf die die Rechte gewährt werden sollen und Query Editor öffnen. Hier muss die AD-Authentifizierung verwendet werden! Dort dann den folgenden Befehl eingeben:
 
 ```
 CREATE USER [WIE_AUCH_IMMER_ICH_DIE_APP_BENANNT_HABE] FROM EXTERNAL PROVIDER
@@ -1238,7 +1238,39 @@ Dieses Thema wurde bereits beim Thema stored access policies behandelt.
 
 #### encrypt and decrypt data at rest and in transit
 
+Grundsätzlich sei erwähnt, dass alle Daten z.B. in einem Storage Account verschlüsselt sind. Dafür wird ein Microsoft interner Schlüssel verwendet. Es ist allerdings auch möglich einen eigenen zu verwenden (Storage Account => Encryption).
+
+Bei Encryption in transit sind verschlüsselte Verbindungen (= TLS) entscheidend.
+
 #### create, read, update, and delete keys, secrets, and certificates by using the KeyVault API
+
+KeyVault ist das zentrale Azure Produkt, in dem alle Kennwörter, Zertifikate, ... gespeichert werden. 
+
+```powershell
+New-AzKeyVault `
+  -ResourceGroupName TestRG `
+  -Name kv20200203 `
+  -Location "West Europe"
+
+$secretVal = ConvertTo-SecureString `
+  -String "asdfobjDFl4rn" `
+  -AsPlainText `
+  -Force 
+
+$secret = Set-AzKeyVaultSecret `
+  -VaultName kv20200203 `
+  -Name MasterPassword `
+  -SecretValue $secretVal
+```
+
+Hier der Code zum erstellen eines Keys:
+
+```powershell
+Add-AzKeyVaultKey `
+  -VaultName kv20200203 `
+  -Name MasterKey `
+  -Destination Software
+```
 
 ## Monitor, troubleshoot, and optimize Azure Solutions
 
