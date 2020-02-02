@@ -1,5 +1,7 @@
 # AZ-203 Vorbereitung (WIP)
 
+
+
 Auf [https://www.microsoft.com/de-de/learning/exam-az-203.aspx](https://www.microsoft.com/de-de/learning/exam-az-203.aspx) gibt es die relevanten Informationen zur AZ-203 Prüfung, mit der man offiziell ein "Microsoft-zertifiziert: Azure Developer Associate" wird :-).
 
 Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinung nach wichtigen Details, Beispiele oder sonstigen Informationen zur Vorbereitung auf die Prüfung ergänzt.
@@ -1199,11 +1201,38 @@ Das hier geforderte ist (meiner Meinung nach) bereits im oberen Beispiel Zertifi
 
 ### Implement access control
 
+Unterschied zwischen Role und Claim:
+
+* Benutzer hat ein oder mehrere Rollen (z.B. Administrator, HR, Buchhaltung, ...)
+* Claims sind Eigenschaften von Benutzern, wie z.B. Geburtsdatum, Name, Adresse, ... also ein Key/Value-Paar
+
+Unter [https://docs.microsoft.com/en-us/aspnet/core/security/authorization/introduction?view=aspnetcore-3.1](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/introduction?view=aspnetcore-3.1) ist das Thema sehr gut zusammengefasst.
+
 #### implement CBAC (Claims-Based Access Control) authorization
+
+Wie zuvor erwähnt geht es hier um Berechtigungen aufgrund von bestimmten Eigenschaften eines Benutzers. Ein Beispiel ist, dass ein bestimmtes Formular oder eine Funktion nur aufgerufen werden darf, wenn der Benutzer mindestens 18 Jahre alt ist.
+
+```csharp
+[Authorize(Policy = "AtLeast21")]
+public class AlcoholPurchaseModel : PageModel
+{
+}
+```
 
 #### implement RBAC (Role-Based Access Control) authorization
 
+Im Vergleich dazu kann mit RBAC definiert werden, dass ein bestimmtes Formular oder eine Funktion nur aufgerufen werden darf, wenn der Benutzer eine bestimmte Rolle besitzt.
+
+```csharp
+[Authorize(Roles = "Administrator")]
+public class AdministrationController : Controller
+{
+}
+```
+
 #### create shared access signatures
+
+Dieses Thema wurde bereits beim Thema stored access policies behandelt.
 
 ### Implement secure data solutions
 
