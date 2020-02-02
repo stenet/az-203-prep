@@ -1182,7 +1182,13 @@ Um einen neuen Access-Token mit Hilfe des Refresh-Tokens zu erstellen, muss der 
 * client_secret - Secret in der App Registrierung unter "Certificates & secrets" bei "Client secrets"
 * refresh_token - Refresh Token von vorher
 
-#### implement Managend identities/Service Principal authentication
+#### implement Managed identities/Service Principal authentication
+
+Viele Ressourcen können selbst eine Identity sein. 
+
+Am Beispiel App Services kann in den Einstellungen unter "Identity" der Ressource eine "System assigned" Identity zugewiesen werden (sprich genau für diese Ressource gibt es eine eigene Identity). Alternativ kann unter "User Assigned" eine zuvor erstellte "User Assigned Managed Identity" zugeteilt werden.
+
+Damit entfällt, entsprechende Rechte auf die hinterlegte Identity vorausgesetzt, dass sich einzelne Ressouchen untereinander z.B. durch Passwörter authentifizieren müssen.
 
 #### implement Microsoft identity platform
 
