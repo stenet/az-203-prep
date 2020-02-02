@@ -1193,6 +1193,10 @@ Damit entfällt, entsprechende Rechte auf die hinterlegte Identity vorausgesetzt
 
 #### implement Microsoft identity platform
 
+Laut [https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-overview](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-overview) handelt es sich dabei um eine Evolution von Azure Active Directory.
+
+Das hier geforderte ist (meiner Meinung nach) bereits im oberen Beispiel Zertifikat + SQL Server erstellt worden.
+
 ### Implement access control
 
 #### implement CBAC (Claims-Based Access Control) authorization
