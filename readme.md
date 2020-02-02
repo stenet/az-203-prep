@@ -1,12 +1,12 @@
 # AZ-203 Vorbereitung (WIP)
 
-Auf [https://www.microsoft.com/de-de/learning/exam-az-203.aspx](https://www.microsoft.com/de-de/learning/exam-az-203.aspx) gibt's die relevanten Informationen zur AZ-203 Prüfung, mit der man offiziell ein "Microsoft-zertifiziert: Azure Developer Associate" wird :-).
+Auf [https://www.microsoft.com/de-de/learning/exam-az-203.aspx](https://www.microsoft.com/de-de/learning/exam-az-203.aspx) gibt es die relevanten Informationen zur AZ-203 Prüfung, mit der man offiziell ein "Microsoft-zertifiziert: Azure Developer Associate" wird :-).
 
-Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinung nach wichtigen Details, Beispiele oder sonstige Informationen zur Vorbereitung auf die Prüfung dazugeschrieben.
+Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinung nach wichtigen Details, Beispiele oder sonstigen Informationen zur Vorbereitung auf die Prüfung ergänzt.
 
-Für die Verwaltung von Subscriptions, Ressourcegruppen oder Ressourcen kann mit Hilfe des Azure Portals, der Azure CLI, Powershell, SDKs oder direkt per REST gemacht werden. Aufgrund der Wiederverwendbarkeit ist das Azure Portal nur bedingt empfehlenswert.
+Die Verwaltung von Subscriptions, Resource groups oder Resources kann mit Hilfe des Azure Portals, der Azure CLI, Powershell, SDKs oder direkt per REST gemacht werden. Aufgrund der Wiederverwendbarkeit ist das Azure Portal nur bedingt empfehlenswert.
 
-Viele meiner Recherchen habe ich von [https://melcher.dev/2019/01/az-203-learning-material-/-link-collection/](https://melcher.dev/2019/01/az-203-learning-material-/-link-collection/), wo netterweise die Links zu den Detailseiten von Microsoft oder anderen gesammelt sind.
+Unter [https://melcher.dev/2019/01/az-203-learning-material-/-link-collection/](https://melcher.dev/2019/01/az-203-learning-material-/-link-collection/) sind zu den einzelnen Kapiteln jeweils ein oder mehrere Links, die zu detaillierteren Informationen zum jeweiligen Thema führen.
 
 ## Allgemeines
 
@@ -27,7 +27,7 @@ Hier wird ein Link sowie ein Code angezeigt. Der Link wird im Browser geöffnet 
 
 ### Azure CLI
 
-Für Windows kann die Azure CLI unter [https://aka.ms/installazurecliwindows](https://aka.ms/installazurecliwindows) heruntergeladen und installiert werden.
+Für Windows kann die Azure CLI unter [https://aka.ms/installazurecliwindows](https://aka.ms/installazurecliwindows) heruntergeladen und installiert werden. Diese steht aber auch für alle anderen Plattformen (Linux, Mac) zur Verfügung.
 
 Der Login wird wie folgt gemacht:
 
@@ -47,16 +47,15 @@ Der Nachteil, im Vergleich zu PowerShell ist, dass es keine automatische Vervoll
 az vm create --help
 ```
 
-Daher bevorzuge ich PowerShell, da ich dort mittels Strg+Leertaste oder Tab einen Vorschlag bekomme, was möglich ist und nicht immer die Hilfe benötige. Nichts desto trotz habe ich festgestellt, dass manche Funktionalitäten in den PowerShell Cmdlets noch nicht zur Verfügung stehen bzw. nur sehr umständlich sind. In diesem Fall bin ich auf die Azure CLI ausgewichen, die meiner Meinung nach sehr logisch aufgebaut und einfach zu verwenden ist. ;-).
+Daher bevorzuge ich PowerShell, da ich dort mittels Strg + Leertaste oder Tab einen Vorschlag bekomme was möglich ist und nicht immer die Hilfe benötige. Nichts desto trotz habe ich festgestellt, dass manche Funktionalitäten in den PowerShell Cmdlets noch nicht zur Verfügung stehen bzw. nur sehr umständlich machbar sind. In diesem Fall bin ich auf die Azure CLI ausgewichen.
 
 ### Ressourcengruppen
 
 Jede Ressource, die in Azure erstellt wird, wird einer Ressourcengruppe zugeordnet. Dies hat u.a. den Vorteil, dass diese bei der Abrechnung speziell ausgewertet werden können und auch, dass eine Ressourcengruppe als gesamtes gelöscht werden kann, was beim Testen von einzelnen Ressourcen sehr vorteilhaft ist.
 
-
 ### Links
 
-* https://webhook.site - erstellt einen Endpunkt
+* https://webhook.site - erstellt einen Endpunkt, was zum Beispiel beim Testen von OAuth2 weiter unten sehr hilfsreich war.
 
 ## Develop Azure Infrastructure as a Service compute solution
 
@@ -74,9 +73,9 @@ New-AzVm `
   -OpenPorts 80,3389
 ```
 
-Damit wird eine Windows Server 2016 mit der Standardgröße "Standard DS1 v2" erstellt. Zusätzlich wird ein NIC, ein virtuelles Netzwerk, eine öffentliche IP-Adresse, eine Netzwerk Sicherheitsgruppe sowie eine Festplatte erstellt. Im produktiven Umfeld würde man dies natürlich nicht so machen, sondern die einzelnen Elemente, die erstellt werden sollen, explizit angeben/benennen.
+Damit wird eine Windows Server 2016 mit der Standardgröße "Standard DS1 v2" erstellt. Zusätzlich wird ein NIC, ein virtuelles Netzwerk, eine öffentliche IP-Adresse, eine Netzwerk Sicherheitsgruppe sowie eine Festplatte erstellt und die Ports 80 + 3389 geöffnet. Im produktiven Umfeld würde man dies natürlich nicht so machen, sondern die einzelnen Elemente, die erstellt werden sollen, explizit angeben/benennen.
 
-Anschließend kann die IP-Adresse abgefragt werden sowie mit RDM eine Remotesitzung gestartet werden.
+Anschließend kann die IP-Adresse abgefragt sowie mit RDM eine Remotesitzung gestartet werden.
 
 ```powershell
 Get-AzPublicIpAddress | where Name -eq VM | select IpAddress
@@ -151,7 +150,7 @@ Bei einer ARM-Vorlage handelt es sich um eine JSON-Datei, die die zu erstellende
 
 ARM-Vorlagen bieten u.a. folgende Vorteile:
 * Deklarative Syntax
-* Wiederholbar Ergebnisse
+* Wiederholbare Ergebnisse
 * Abbildung von Abhängigkeiten der Ressourcen
 * Validierung der Vorlage
 
@@ -215,13 +214,13 @@ Die nachfolgende Grafik zeigt den Ablauf bei Verwendung von Azure Batch.
 
 [https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview](https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview)
 
-Mit Hilfe von Azure Batch können aufwändige Operationen, die sich in parallel abarbeiten lassen, optimal und schnell durchführen. Im Batch Account werden Pools definiert. Der Pool definiert welches Betriebssystem verwendet werden soll, wie groß die Nodes sein sollen, wie sich die Skalierung verhalten soll, wie viele Nodes es geben soll, wie viele Tasks parallel auf einer Node ausgeführt werden können, die zu installierende Applikation, Netzwerk, usw.
+Mit Hilfe von Azure Batch können aufwändige Operationen, die sich parallel abarbeiten lassen, optimal und schnell durchgeführt werden. Im Batch Account werden Pools definiert. Der Pool definiert welches Betriebssystem verwendet werden soll, wie groß die Nodes sein sollen, wie sich die Skalierung verhalten soll, wie viele Nodes es geben soll, wie viele Tasks parallel auf einer Node ausgeführt werden können, die zu installierende Applikation, Netzwerk, usw.
 
 #### manage batch jobs by using Batch Service API
 
-Wenn der Pool definiert ist, dann können Jobs erstellt werden. Ein Job kann wiederum mehrere Tasks haben. Der Task enthält Input-Dateien sowie den Befehl (Commandline), der zum Start ausgeführt werden soll.
+Wenn der Pool definiert ist können Jobs erstellt werden. Ein Job kann wiederum mehrere Tasks haben. Der Task enthält Input-Dateien sowie den Befehl (Commandline), der zum Start ausgeführt werden soll.
 
-Nachfolgend der Ablauf mit den wichtigsten Funktionen.
+Nachfolgend der Ablauf (C#) mit den wichtigsten Funktionen.
 
 Client erstellen:
 
@@ -340,7 +339,7 @@ Einführend ein paar Worte zu Kubernetes (K8s). Dies wurde 2014 von Google als O
 
 [https://de.wikipedia.org/wiki/Kubernetes](https://de.wikipedia.org/wiki/Kubernetes)
 
-Wie man in der Grafik oben sieht gibt es einen Master (könnten auch mehrere sein) und mehrere Nodes. Der Master steuert den Cluster. Innerhalb einer Node arbeiten Pods (Arbeitsprozesse). Innerhalb eines Pods laufen ein oder mehrere Container.
+Wie man in der Grafik oben sieht gibt es einen Master (könnten auch mehrere sein, ungerade Zahl) und mehrere Nodes. Der Master steuert den Cluster. Innerhalb einer Node arbeiten Pods (Arbeitsprozesse). Innerhalb eines Pods laufen ein oder mehrere Container.
 
 Erstmal die Kubernetes CLI installieren. Klappt, wieso auch immer, am einfachsten über die Azure CLI ;-).
 
@@ -382,7 +381,7 @@ Um den Status der Node zu überprüfen:
 kubectl get nodes
 ```
 
-Der Cluster steht und jetzt werden die Container aktiviert. Dafür wird eine yaml-Datei benötigt.
+Der Cluster steht und die Container können können aktiviert werden. Dafür wird eine yaml-Datei benötigt.
 
 Beispiel für eine yaml-Datei, die einen nginx mit 2 Replikas erstellt:
 
@@ -444,7 +443,7 @@ az aks browse --resource-group TestRG --name TestAKS
 
 #### create container images for solutions
 
-Als nächstes wird ein Docker-Image erstellt :-) Der Code befindet sich im Unterordner custom-nginx inkl. dem nachfolgenden Dockerfile.
+Als nächstes wird ein Docker-Image erstellt :-) Der Code befindet sich in [https://github.com/stenet/az-203-prep/tree/master/custom-nginx](https://github.com/stenet/az-203-prep/tree/master/custom-nginx) inkl. dem nachfolgenden Dockerfile.
 
 ```dockerfile
 FROM nginx
@@ -528,7 +527,7 @@ Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzAppSe
 
 #### create an Azure App Service background task by using WebJobs
 
-Im vorherigen Beispiel-Code steckt auch ein WebJobs-Projekt. Dieses ändert alle 5 Sekunden den Wert in einer Datei. Die Web App liefert auf der Startseite diesen Wert aus. Dies zeigt, dass sowohl die App als auch der WebJob in der gleichen Instanz laufen.
+Im vorherigen Beispiel-Code steckt auch ein WebJobs-Projekt. Dieses ändert alle 5 Sekunden den Wert in einer Datei. Die Web App zeigt auf der Startseite diesen Wert an. Dies zeigt, dass sowohl die App als auch der WebJob in der gleichen Instanz laufen.
 
 Kleiner Hinweis (der mich zwei Stunden gekostet hat): auch wenn sowohl die Web App als auch der WebJob in der gleichen Instanz laufen, teilen sie sich nicht das Temp-Verzeichnis. Dieses befindet sich zwar jeweils unter d:\local\temp, ist separat gemounted.
 
@@ -703,7 +702,7 @@ Neben shared access signatures (SAS) gibt es serverseitig noch stored access pol
 * Queues
 * Tables
 
-Bei der Erstellung eines SAS kann entweder die Berechtigung direkt angegeben werden, oder auf eine Policy verwiesen werden. Der Vorteil beim Verweis auf die Policy ist, dass diese im Nachhinein geändert oder gelöscht werden kann, wodurch die Rechte entzogen werden. Da eine SAS nur eine Signatur ist, die serverseitig nicht gespeichert ist, ist diese so lange gültig, wie beim Erstellen definiert wurde.
+Bei der Erstellung einer SAS kann entweder die Berechtigung direkt angegeben werden, oder auf eine Policy verwiesen werden. Der Vorteil beim Verweis auf die Policy ist, dass diese im Nachhinein geändert oder gelöscht werden kann, wodurch die Rechte entzogen werden. Da eine SAS nur eine Signatur ist, die serverseitig nicht gespeichert ist, ist diese so lange gültig, wie beim Erstellen definiert wurde.
 
 Wichtig: das Erstellen einer Policy kann bis zu 30 Sekunden dauern!
 
@@ -767,9 +766,11 @@ $sas2 = New-AzStorageContainerSASToken `
 $file.ICloudBlob.Uri.AbsoluteUri + $sas2
 ```
 
+Abschließend sei erwähnt, dass max. 5 stored access policies pro Element definiert werden können!
+
 #### query table storage by using code
 
-Nachfolgend wird ein neuer Table-Storage inkl. vollen Berechtigungen für alle (was man natürlich im produktiven Umfeld nie machen würde ...) erstellt:
+Nachfolgend wird ein neuer Table-Storage inkl. einem SAS-Token mit vollen Rechten erstellt:
 
 ```powershell
 $storage = New-AzStorageAccount `
@@ -924,7 +925,7 @@ Cosmos DB unterscheidet 5 Konsistenzebenen (in absteigender Reihenfolge):
 
 Diese spielen primär dann eine Rolle, wenn Daten georepliziert (gibt es das Wort?) wurden.
 
-Der Konsistenzlevel kann je Client oder Request geändert werden, allerdings nur zu einem Schwächeren als dem der als Standard definiert ist.
+Der Konsistenzlevel kann je Client oder Request geändert werden, allerdings nur zu einem Schwächeren als den, der als Standard definiert ist.
 
 ### Develop solutions that use relational database
 
@@ -1188,7 +1189,7 @@ Viele Ressourcen können selbst eine Identity sein.
 
 Am Beispiel App Services kann in den Einstellungen unter "Identity" der Ressource eine "System assigned" Identity zugewiesen werden (sprich genau für diese Ressource gibt es eine eigene Identity). Alternativ kann unter "User Assigned" eine zuvor erstellte "User Assigned Managed Identity" zugeteilt werden.
 
-Damit entfällt, entsprechende Rechte auf die hinterlegte Identity vorausgesetzt, dass sich einzelne Ressouchen untereinander z.B. durch Passwörter authentifizieren müssen.
+Damit entfällt, entsprechende Rechte auf die hinterlegte Identity vorausgesetzt, dass sich einzelne Ressourcen untereinander z.B. durch Passwörter authentifizieren müssen.
 
 #### implement Microsoft identity platform
 
