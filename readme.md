@@ -1315,16 +1315,24 @@ Es gibt folgende Möglichkeiten:
 NuGet-Paket "StackExchange.Redis" einbinden. 
 
 ```csharp
-var redis = ConnectionMultiplexer.Connect(cacheConnection);
+var redis = ConnectionMultiplexer.Connect(CONNECTION_STRING);
 var cache = redis.GetDatabase();
 
 cache.StringSet("mykey", "WERT");
 var value = cache.StringGet("mykey");
 ```
 
+Gesamter Code (wobei es nicht viel mehr ist ;-)) ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzRedisCache](https://github.com/stenet/az-203-prep/tree/master/vs/AzRedisCache).
+
 #### develop code to implement CDN's in solutions
 
+CDN = Content Delivery Network
+
 #### invalidate cache content (CDN or Redis)
+
+Bei Redis kann während des Erstellens eines Keys ein Zeitraum angegeben werden, nachdem der Key gelöscht wird.
+
+Bei CDN kann dies über "Caching rules" und Angabe von Zeiten gesteuert werden. 
 
 ### Instrument solutions to support monitoring and logging
 
