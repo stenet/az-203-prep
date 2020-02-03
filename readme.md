@@ -1327,6 +1327,7 @@ Gesamter Code (wobei es nicht viel mehr ist ;-)) ist unter [https://github.com/s
 #### develop code to implement CDN's in solutions
 
 CDN = Content Delivery Network
+TODO
 
 #### invalidate cache content (CDN or Redis)
 
@@ -1338,9 +1339,42 @@ Bei CDN kann dies über "Caching rules" und Angabe von Zeiten gesteuert werden.
 
 #### configure instrumentation in an app or service by using Applications Insights
 
+Wenn der "Azure Development" Workload installiert ist, dann ist die Einbindung von Application Insights in eine ASP.NET Anwendung sehr einfach. Einfach mit rechter Maustaste auf das Projekt klicken => Add => "Application Insights Telemetry...". Dann werden die notwendigen NuGet-Pakete installiert und alles konfiguriert. Im Root des Projektes befindet sich dann eine "ApplicationInsights.config"-Datei, in der u.a. auch der InstrumentationKey angegeben ist.
+
+Um Application Insights in einer JavaScript-Anwendung zu integrieren, muss als erstes das Paket "@microsoft/applicationinsights-web" per npm installiert werden. Anschließend im Start den Code (nur als Beispiel) platzieren:
+
+```javascript
+const appInsights = new ApplicationInsights({ 
+  config: {
+    instrumentationKey: "MEIN_INSTRUMENTATION_KEY",
+    enableCorsCorrelation: true,
+    autoTrackPageVisitTime: true,
+    enableAutoRouteTracking: true
+  }
+});
+
+appInsights.loadAppInsights();
+```
+
+Nach dem Login folgenden Code ausführen:
+
+```javascript
+appInsights.setAuthenticatedUserContext(ID_BENUTZER);
+```
+
+Nach einem Logout folgenden Code ausführen:
+
+```javascript
+appInsights.clearAuthenticatedUserContext();
+```
+
 #### analyze and troubleshoot solutions by using Azure Monitor
 
+Azure Monitor muss man sich selbst anschauen. Ist ziemlich selbsterklärend und hat jede Menge Features ...
+
 #### implement Applications Insights Web Test and Alerts
+
+In Application Insights kann beispielsweise unter "Availability" eine Ping-Prüfung auf eine Webseite hinterlegt werden, die zyklisch durchgeführt wird. Im Fehlerfall (lt. hinterlegten Bedingungen) wird ein Alert ausgeführt.
 
 ## Connect to and consume Azure services and third-party services
 
