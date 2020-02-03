@@ -1312,6 +1312,16 @@ Es gibt folgende Möglichkeiten:
 
 #### store and retrieve data in Azure Redis cache
 
+NuGet-Paket "StackExchange.Redis" einbinden. 
+
+```csharp
+var redis = ConnectionMultiplexer.Connect(cacheConnection);
+var cache = redis.GetDatabase();
+
+cache.StringSet("mykey", "WERT");
+var value = cache.StringGet("mykey");
+```
+
 #### develop code to implement CDN's in solutions
 
 #### invalidate cache content (CDN or Redis)
