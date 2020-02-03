@@ -619,7 +619,7 @@ Als Sprachen zur Erstellung von Functions steht .NET Core, Node.js, Python, Java
 
 #### implement input and output bindings for a function
 
-Bindings ermöglichen die einfache Verwendung von zusätzliche Ressourchen (z.B. Blog-Storage, Cosmos DB, ...). Dabei wird zwischen Input- und Output-Bindings unterschieden. Aufgrund des Namens dürfte die Bedeutung klar sein ;-).
+Bindings ermöglichen die einfache Verwendung von zusätzliche Ressourcen (z.B. Blog-Storage, Cosmos DB, ...). Dabei wird zwischen Input- und Output-Bindings unterschieden. Aufgrund des Namens dürfte die Bedeutung klar sein ;-).
 
 Hier ein Beispiel für einen Trigger:
 
@@ -1278,9 +1278,35 @@ Add-AzKeyVaultKey `
 
 #### implement autoscaling rules and patterns (schedule, operational/system metrics, singleton applications)
 
+Im Azure Monitor im Menüpunkt "Autoscale" werden die Ressourcen aufgelistet, für die Autoscaling verfügbar bzw. aktiviert ist. Durch den Klick auf die Ressource (z.B. eine Service App) werden die Autoscale Eigenschaften angezeigt. Standardmäßig befinden sich diese auf "manual". Damit kann der Benutzer manuell z.B. die Azahl der Instanzen festlegen.
+
+Um diese zu automatisieren muss auf "Custom autoscale" gewechselt werden. Hier können nun Regeln definiert werden, wann ein "scale out" und wann ein "scale in" durchgeführt werden soll. Dies kann abhängig von Zeiten oder Metriken sein.
+
+Wichtig: immer auch eine "scale in" Regel definieren, damit, wenn Ressourcen nicht benötigt werden, diese nicht beansprucht und bezahlt werden müssen.
+
+Unterschied zwischen horizontalem und vertikalem Scaling:
+
+* Horizontal - neue Instanzen
+* Vertikal - Instanz bekommt mehr Ressourcen
+
 #### implement code that handles transient faults
 
+In diesem Punkt geht es darum, wie im Falle von nicht verfügbaren Ressourcen (kurzfristig, langfristig) umgegangen werden soll. Ein paar Guidelines aus der Dokumentation [https://docs.microsoft.com/en-us/azure/architecture/best-practices/transient-faults](https://docs.microsoft.com/en-us/azure/architecture/best-practices/transient-faults):
+
+* Prüfen, ob die Funktion im SDK selbst versucht, den Vorgang zu wiederholen.
+* Prüfen, ob es überhaupt Sinn macht, den Vorgang zu wiederholen.
+* Anzahl der erneuten Versuche und zeitraum dazwischen sinnvoll abwägen
+* Protokollierung
+* Szenarien testen!
+
 #### implement AKS scaling strategies
+
+Es gibt folgende Möglichkeiten:
+
+* manuelle Skalierung von Pods und Nodes
+* Horizontal Pod Autoscaler
+* Cluster Autoscaler
+* Einbindung Azure Container Instances
 
 ### Integrate caching and content delivery within solutions
 
