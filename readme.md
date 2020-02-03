@@ -1446,7 +1446,21 @@ Bei import searchable data bereits erwähnt.
 
 #### establish API Gateways
 
-#### create and APIM instance
+
+
+#### create an APIM instance
+
+```powershell
+New-AzApiManagement `
+  -ResourceGroupName TestRG `
+  -Location "West Europe" `
+  -Name apim20200203 `
+  -Sku Developer `
+  -Organization "Unbekannt" `
+  -AdminEmail "email@domain.com"
+```
+
+Das erstellen dauert gefühlt zwei Stunden ... ;-)
 
 #### configure authentication for APIs
 
