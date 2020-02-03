@@ -1382,19 +1382,65 @@ In Application Insights kann beispielsweise unter "Availability" eine Ping-Prüf
 
 #### create a Logic App
 
+Nachdem dies alles im Azure Portal erstellt wird (außer man macht gerne ARM-Templates): [https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow).
+
 #### create a custom connector for Logic Apps
 
+Um einen benutzerdefinierten Connector zu erstellen, muss die API beschrieben werden, mit der eine Verbindung hergestellt werden soll. Falls eine Postman Collection oder OpenAPI zur Verfügung steht, kann diese direkt hinzugefügt werden.
+
 #### create a custom template for Logic Apps
+
+Es ist wahrscheinlich am sinnvollsten die Logic App im Portal zu erstellen und anschließend das ARM-Template zu speichern und zu editieren.
 
 ### Integrate Azure Search within solutions
 
 #### create an Azure Search index
 
+Ich habe zwar versucht einen Search Service mit PowerShell oder der Azure CLI zu erstellen, aber in PowerShell gab es das Cmdlet dafür überhaupt nicht und die Azure CLI meinte immer nur, dass der Name bereits in Verwendung ist. Daher habe ihn dann im Portal erstellt.
+
+Die Erstellung eines Index ist ähnlich der Erstellung einer Tabelle in einer relationalen Datenbank. Heißt es gibt einen Primärschlüssel, Spalten (= Felder) und Datentypen. Pro Feld kann definiert werden, ob
+
+* retrievable
+* filterable
+* sortable
+* searchable
+
 #### import searchable data
+
+Daten können aus div. Quelle importiert werden:
+
+* Azure SQL Database
+* SQL Server auf einer Azure VM
+* Cosmos DB
+* Blob Storage
+* Table Storage
+
+Dabei können die Datensätze durch cognitive Funktionen erweitert werden: 
+
+* Personennamen extrahieren
+* Firmennamen extrahieren
+* Orte extrahieren
+* Übersetzung
+* ...
 
 #### query the Azure Search index
 
+Bei der Suche gibt es zwei Möglichkeiten des Abfragentyps:
+
+* simple - unterstützt und, oder, Suffix, Phrase
+* full  - Lucene Abfragesyntax
+
+Beispiel für eine einfache Suche:
+
+```
+https://search20200203t2.search.windows.net/indexes/hotels-sample-index/docs?api-version=2019-05-06&%24top=10&search=kirkland
+```
+
+Bei der Suche muss immer die api-version angegeben werden. Wird kein expliziter queryType angegeben, handelt es sich um simple.
+
 #### implement cognitive search
+
+Bei import searchable data bereits erwähnt.
 
 ### Implement API management
 
