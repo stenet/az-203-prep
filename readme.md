@@ -464,6 +464,8 @@ EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+Zusätzlich, wenn notwendig, kann mit dem Befehl "RUN" im Zuge des Buildvorganges andere Commands ausgeführt werden.
+
 Mit der PowerShell in den Ordner wechseln, wo das Dockerfile ist und folgenden Befehl ausführen:
 
 ```powershell
@@ -1537,7 +1539,7 @@ Ein komplettes ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/A
 
 #### implement solutions that use Azure Queue Storage queues
 
-In einer sehr vereinfachten Form kann das, was mit dem Service Bus und Queue gemacht werden kann, auch mit der Storage Queue gemacht werden. Der Nachteil ist allerdings, dass hier ein ständiges Pollen auf neue Nachrichten gemacht werden muss ...
+In einer sehr vereinfachten Form kann das, was mit dem Service Bus und Queue gemacht werden kann, auch mit der Queue Storage gemacht werden. Der Nachteil ist allerdings, dass hier ein ständiges Pollen auf neue Nachrichten gemacht werden muss ...
 
 ```csharp
 static void Main(string[] args)
