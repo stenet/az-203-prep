@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzStorageQueue", "AzStorageQueue\AzStorageQueue.csproj", "{164CEF77-E6BA-4B52-A068-5C95F3559C0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{164CEF77-E6BA-4B52-A068-5C95F3559C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{164CEF77-E6BA-4B52-A068-5C95F3559C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{164CEF77-E6BA-4B52-A068-5C95F3559C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{164CEF77-E6BA-4B52-A068-5C95F3559C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BBD3D0BB-0D15-4C18-A8E7-B733376E1D3B}
+	EndGlobalSection
+EndGlobal

@@ -237,12 +237,12 @@ var pool = client.PoolOperations.CreatePool(
   POOL_ID,
   "Standard_A1_v2",
   new VirtualMachineConfiguration(
-      imageReference: new ImageReference(
-          publisher: "MicrosoftWindowsServer",
-          offer: "WindowsServer",
-          sku: "2016-datacenter-smalldisk",
-          version: "latest"),
-      nodeAgentSkuId: "batch.node.windows amd64"),
+    imageReference: new ImageReference(
+      publisher: "MicrosoftWindowsServer",
+      offer: "WindowsServer",
+      sku: "2016-datacenter-smalldisk",
+      version: "latest"),
+    nodeAgentSkuId: "batch.node.windows amd64"),
   targetDedicatedComputeNodes: 2);
 
 pool.Commit();
@@ -627,7 +627,7 @@ Hier ein Beispiel für einen Trigger:
 [FunctionName("BlogTrigger")]        
 public static void Run([BlobTrigger("xyz/{name}")] Stream blob, string name, ILogger log)
 {
-    log.LogInformation($"Es wurde eine neue Datei in den Container xyz mit dem Namen {name} und der Größe Size: {myBlob.Length} Bytes hinzugefügt.");
+  log.LogInformation($"Es wurde eine neue Datei in den Container xyz mit dem Namen {name} und der Größe Size: {myBlob.Length} Bytes hinzugefügt.");
 }
 ```
 Dieser wird ausgeführt, wenn im definierten Storage-Account im Container "xyz" eine Datei hinzugefügt wird. "xyz/{name}" ist eine Binding Expression ([https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-expressions-patterns](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-expressions-patterns)).
@@ -648,17 +648,17 @@ Normale Azure Functions sind stateless. Dies bedeutet, dass diese ausgeführt we
 [FunctionName("Chaining")]
 public static async Task<object> Run([OrchestrationTrigger] IDurableOrchestrationContext context)
 {
-    try
-    {
-        var x = await context.CallActivityAsync<object>("F1", null);
-        var y = await context.CallActivityAsync<object>("F2", x);
-        var z = await context.CallActivityAsync<object>("F3", y);
-        return  await context.CallActivityAsync<object>("F4", z);
-    }
-    catch (Exception)
-    {
-        // Error handling or compensation goes here.
-    }
+  try
+  {
+    var x = await context.CallActivityAsync<object>("F1", null);
+    var y = await context.CallActivityAsync<object>("F2", x);
+    var z = await context.CallActivityAsync<object>("F3", y);
+    return  await context.CallActivityAsync<object>("F4", z);
+  }
+  catch (Exception)
+  {
+    // Error handling or compensation goes here.
+  }
 }
 ```
 
@@ -850,12 +850,12 @@ var collectionLink = UriFactory.CreateDocumentCollectionUri(DATABASE_ID, COLLECT
 
 var database = await client.CreateDatabaseIfNotExistsAsync(new Database()
 {
-    Id = DATABASE_ID
+  Id = DATABASE_ID
 });
 
 var collection = new DocumentCollection()
 {
-    Id = COLLECTION_ID
+  Id = COLLECTION_ID
 };
 
 collection.PartitionKey.Paths.Add("/Country");
@@ -874,40 +874,39 @@ var person4 = new Person("D", "D", "DE");
 await client.UpsertDocumentAsync(collectionLink, person4);
 
 var allPersonList = client
-    .CreateDocumentQuery<Person>(collectionLink)
-    .ToList();
+  .CreateDocumentQuery<Person>(collectionLink)
+  .ToList();
 
 var personWithFirstNameDList = client
-    .CreateDocumentQuery<Person>(collectionLink, new FeedOptions()
-    {
-        EnableCrossPartitionQuery = true
-    })
-    .Where(c => c.FirstName == "D")
-    .ToList();
-
+  .CreateDocumentQuery<Person>(collectionLink, new FeedOptions()
+  {
+    EnableCrossPartitionQuery = true
+  })
+  .Where(c => c.FirstName == "D")
+  .ToList();
 
 foreach (var item in personWithFirstNameDList)
 {
-    item.FirstName = "DD";
+  item.FirstName = "DD";
 
-    await client.ReplaceDocumentAsync(
-        UriFactory.CreateDocumentUri(DATABASE_ID, COLLECTION_ID, item.Id),
-        item,
-        new RequestOptions() { PartitionKey = new PartitionKey(item.Country) });
+  await client.ReplaceDocumentAsync(
+    UriFactory.CreateDocumentUri(DATABASE_ID, COLLECTION_ID, item.Id),
+    item,
+    new RequestOptions() { PartitionKey = new PartitionKey(item.Country) });
 }
 
 var personWithPartitionKeyATList = client
-    .CreateDocumentQuery<Person>(collectionLink, new FeedOptions()
-    {
-        PartitionKey = new PartitionKey("AT")
-    })
-    .ToList();
+  .CreateDocumentQuery<Person>(collectionLink, new FeedOptions()
+  {
+    PartitionKey = new PartitionKey("AT")
+  })
+  .ToList();
 
 foreach (var item in personWithPartitionKeyATList)
 {
-    await client.DeleteDocumentAsync(
-        UriFactory.CreateDocumentUri(DATABASE_ID, COLLECTION_ID, item.Id),
-        new RequestOptions() { PartitionKey = new PartitionKey(item.Country) });
+  await client.DeleteDocumentAsync(
+    UriFactory.CreateDocumentUri(DATABASE_ID, COLLECTION_ID, item.Id),
+    new RequestOptions() { PartitionKey = new PartitionKey(item.Country) });
 }
 ```
 
@@ -1512,8 +1511,8 @@ var queueClient = new QueueClient(
 
 var messageHandlerOptions = new MessageHandlerOptions(OnExceptionReceived)
 {
-    MaxConcurrentCalls = 1,
-    AutoComplete = false
+  MaxConcurrentCalls = 1,
+  AutoComplete = false
 };
 queueClient.RegisterMessageHandler(OnMessageReveived, messageHandlerOptions);
 
@@ -1526,3 +1525,45 @@ Bei der Verwendung eines Topics funktioniert es leicht anders. Dort wird ein Top
 Ein komplettes ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzServiceBus](https://github.com/stenet/az-203-prep/tree/master/vs/AzServiceBus).
 
 #### implement solutions that use Azure Queue Storage queues
+
+In einer sehr vereinfachten Form kann das, was mit dem Service Bus und Queue gemacht werden kann, auch mit der Storage Queue gemacht werden. Der Nachteil ist allerdings, dass hier ein ständiges Pollen auf neue Nachrichten gemacht werden muss ...
+
+```csharp
+static void Main(string[] args)
+{
+  var storageAccount = CloudStorageAccount.Parse(CONNECTION_STRING);
+  var queueClient = storageAccount.CreateCloudQueueClient();
+  var queue = queueClient.GetQueueReference("testqueue");
+
+  ReceiveMessageAsync(queue);
+
+  var random = new Random();
+  while (true)
+  {
+    Console.WriteLine("Press enter to send a message");
+    Console.ReadLine();
+
+    SendMessageAsync(queue, $"Random {random.Next(0, 1000)}").Wait();
+  }
+}
+
+static async void ReceiveMessageAsync(CloudQueue queue)
+{
+  while (true)
+  {
+    var message = await queue.GetMessageAsync();
+
+    if (message != null)
+    {
+      Console.WriteLine($"received: {message.AsString}");
+      await queue.DeleteMessageAsync(message);
+    }
+  }
+}
+static async Task SendMessageAsync(CloudQueue queue, string message)
+{
+  await queue.AddMessageAsync(new CloudQueueMessage(message));
+}
+```
+
+Dieses Beispiel ist [https://github.com/stenet/az-203-prep/tree/master/vs/AzStorageQueue](https://github.com/stenet/az-203-prep/tree/master/vs/AzStorageQueue).
