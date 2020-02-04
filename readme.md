@@ -144,6 +144,8 @@ Get-AzVm `
   -Status
 ```
 
+Interessanter Zusatz: mit Invoke-AzVMRunCommand kann z.B. nach der Erstellung einer VM ein Skript innerhalb der VM ausgeführt werden. Alternativ gibt es die "Custom Script Extension", die Skripte auf die VM lädt (aus Azure Storage oder GitHub) und ausführt - was auch beim Post-Deployment interessant sein kann. 
+
 #### create ARM templates
 
 Bei einer ARM-Vorlage handelt es sich um eine JSON-Datei, die die zu erstellenden Ressourcen inkl. aller Parameter enthält. Die Parameter können dabei fix in der Datei stehen, können aber auch berechnet (über Variablen) oder aus einer separaten Parameter-Datei gelesen werden.
