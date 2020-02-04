@@ -649,6 +649,10 @@ Mit dem Parameter "blob" bekommen wird den direkten Zugriff auf den Blob der ers
 
 Wird die Function im Azure Portal erstellt, dann fallen die Attribute wie "FunctionName", "BlobTrigger" weg, da diese bereits durch die Definition bekannt/definiert sind.
 
+Kleine Zusatzbemerkung: Functions, die durch Blob storage, Queue Storage oder Service Bus aufgerufen werden und fehlschlagen, werden automatisch bis zu 5x erneut versucht. Falls es dann immer noch geklappt hat, landet die im Falle von Queue Storage und Service Bus die Messsage in der "poison queue".
+
+Falls gleichzeitig mehreren Daten erstellt wurden, dann läuft die "Run"-Methode ggf. mehrfach parallel.
+
 #### implement function triggers by using data operations, timers, and webhooks
 
 TODO
