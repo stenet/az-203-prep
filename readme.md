@@ -1,7 +1,5 @@
 # AZ-203 Vorbereitung (WIP)
 
-
-
 Auf [https://www.microsoft.com/de-de/learning/exam-az-203.aspx](https://www.microsoft.com/de-de/learning/exam-az-203.aspx) gibt es die relevanten Informationen zur AZ-203 Prüfung, mit der man offiziell ein "Microsoft-zertifiziert: Azure Developer Associate" wird :-).
 
 Ich habe nachfolgend die einzelnen Kapitel rausgeschrieben und die meiner Meinung nach wichtigen Details, Beispiele oder sonstigen Informationen zur Vorbereitung auf die Prüfung ergänzt.
@@ -282,6 +280,12 @@ client.Utilities.CreateTaskStateMonitor().WaitAll(addedTasks, TaskState.Complete
 
 Ein Beispiel hierfür ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch](https://github.com/stenet/az-203-prep/tree/master/vs/AzBatch).
 
+Sollen Dateien nach der Verarbeitung eines Tasks gespeichert werden, so bei der Erstellung des CloudTasks die OutputFiles-Eigenschaft befüllt werden. Mit dieser kann eine einzelne Datei oder ein Pattern (*.txt) angegeben werden, ein Blob-Container, ... sowie unter welchen Umständen die Datei hochgeladen werden soll:
+
+* Success - ExitCode = 0
+* Failure - ExitCode != 0
+* Completion - immer
+
 #### run a batch job by using Azure CLI, Azure portal, and other tools
 
 Das Beispiel von oben lässt sich mehr oder weniger auch in PowerShell nachbauen. Nachfolgend der Code dazu (inkl. dem Erzeugen eines Batch-Accounts, dafür ohne Storage):
@@ -532,6 +536,11 @@ Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzAppSe
 Im vorherigen Beispiel-Code steckt auch ein WebJobs-Projekt. Dieses ändert alle 5 Sekunden den Wert in einer Datei. Die Web App zeigt auf der Startseite diesen Wert an. Dies zeigt, dass sowohl die App als auch der WebJob in der gleichen Instanz laufen.
 
 Kleiner Hinweis (der mich zwei Stunden gekostet hat): auch wenn sowohl die Web App als auch der WebJob in der gleichen Instanz laufen, teilen sie sich nicht das Temp-Verzeichnis. Dieses befindet sich zwar jeweils unter d:\local\temp, ist separat gemounted.
+
+Es gibt zwei Arten von WebJobs-Types:
+
+* Continuos - wird direkt gestartet, wenn der WebJob erstellt wird; läuft in allen Instanzen, in denen die Web App läuft (optional kann dies konfiguriert werden); unterstützt Remote Debugging
+* Triggered - manueller Start oder zeitgesteuert; läuft auf einer einzigen Instanz; kein Remote Debugging
 
 #### enable diagnostics logging
 
