@@ -1501,8 +1501,28 @@ Service Bus eignet sich wunderbar für die Kommunikation über Prozess- und Host
 Unterscheidung zwischen Queue und Topic:
 
 * Queue - pro Nachricht ein Empfänger
-* Topic - pro Nachricht mehrere Empfänger
+* Topic - pro Nachricht mehrere Empfänger (Subscriptions)
 
-TODO
+Beispiel für die Verwendung einer Queue
+
+```csharp
+var queueClient = new QueueClient(
+  CONNECTION_STRING, 
+  QUEUE_NAME);
+
+var messageHandlerOptions = new MessageHandlerOptions(OnExceptionReceived)
+{
+    MaxConcurrentCalls = 1,
+    AutoComplete = false
+};
+queueClient.RegisterMessageHandler(OnMessageReveived, messageHandlerOptions);
+
+var messageBytes = Encoding.UTF8.GetBytes("Nachricht");
+queueClient.SendAsync(new Message(messageBytes));
+```
+
+Bei der Verwendung eines Topics funktioniert es leicht anders. Dort wird ein TopicClient und eine SubscriptionClient benötigt; der TopicClient versendet, der SubscriptionClient empfängt. 
+
+Ein komplettes ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzServiceBus](https://github.com/stenet/az-203-prep/tree/master/vs/AzServiceBus).
 
 #### implement solutions that use Azure Queue Storage queues
