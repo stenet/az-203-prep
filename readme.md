@@ -1496,4 +1496,13 @@ Ein weiterer interessanter Anwendungsfall ist die Daten aus entsprechenden Event
 
 #### implement solutions that use Azure Service Bus
 
+Service Bus eignet sich wunderbar für die Kommunikation über Prozess- und Hostgrenzen hinweg.
+
+Unterscheidung zwischen Queue und Topic:
+
+* Queue - pro Nachricht ein Empfänger
+* Topic - pro Nachricht mehrere Empfänger
+
+TODO
+
 #### implement solutions that use Azure Queue Storage queues
