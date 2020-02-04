@@ -584,6 +584,15 @@ az webapp create `
   -i nginx
 ```
 
+Falls es eine eigene Domäne für die Web App gibt, dann kann diese noch mit folgendem Befehl hinzugefügt werden:
+
+```powershell
+az webapp config hostname add `
+  -g TestRG `
+  --webapp-name nginx20200129 `
+  --hostname domain.com
+```
+
 Das Beispiel habe ich mit der Azure CLI gemacht, da das PowerShell Cmdlet keine Möglichkeit hatte einen Linux Service Plan zu erstellen. 
 
 #### monitor service health by using Azure Monitor
