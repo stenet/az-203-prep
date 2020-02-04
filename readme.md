@@ -172,7 +172,7 @@ New-AzResourceGroupDeployment `
 
 #### configure Azure Disk Encryption for VMs
 
-Ziel von verschlüssleten Datenträgern ist, dass diese, falls sie gestohlen werden, nicht ausgelesen werden können. Für Windows-VMs wird hierfür BitLocker eingesetzt, für Linux-VMs dm-crypt.
+Ziel von verschlüsselten Datenträgern ist, dass diese, falls sie gestohlen werden, nicht ausgelesen werden können. Für Windows-VMs wird hierfür BitLocker eingesetzt, für Linux-VMs dm-crypt.
 
 Um Datenträger verschlüsseln zu können, muss ein KeyVault mit EnabledForDiskEncryption erstellt werden/vorhanden sein.
 
@@ -205,6 +205,8 @@ Set-AzVMDiskEncryptionExtension `
   -SkipVmBackup `
   -VolumeType All
 ```
+
+Um eine VM aus einer bestehenden VHD (Virtual-Hard-Disk) zu erstellen, kann der Befehl Add-AzVm verwendet werden. Die VHD kann (bei Windows) mit BitLocker verschlüsselt sein (ohen TPM - Trusted Platform Module).
 
 ### Implement batch jobs by using Azure Batch Services
 
