@@ -1446,7 +1446,7 @@ Bei import searchable data bereits erwähnt.
 
 #### establish API Gateways
 
-
+TODO
 
 #### create an APIM instance
 
@@ -1464,15 +1464,33 @@ Das erstellen dauert gefühlt zwei Stunden ... ;-)
 
 #### configure authentication for APIs
 
+TODO
+
 #### define policies for APIs
+
+TODO
 
 ### Develop event-based solutions
 
 #### implement solutions that use Azure Event Grid
 
+![Event Grid](images/az_event_grid.png)
+
+[https://docs.microsoft.com/en-us/azure/event-grid/overview](https://docs.microsoft.com/en-us/azure/event-grid/overview)
+
+Über Event Grid werden in Azure alle möglichen Events verteilt. Wie in der obigen Grafik ersichtlich, gibt es jede Menge Quellen, die Events an das Event Grid senden. Auf der anderen Seite gibt es Event Handler, die sich auf bestimmte Events registrieren und daraus Aktionen auslösen. Sprich, dem der ein Event abschickt ist es egal, wer oder ob überhaupt sich jemand darum kümmert.
+
+So kann das Event Grid z.B. dafür verwendet werden, dass wenn ein Bild in einen Container im Storage Account geladen wird, dass dieses von einer Azure Function runterskaliert wird.
+
 #### implement solutions that use Azure Notification Hubs
 
+Thema wurde weiter oben bereits behandelt/angeschnitten.
+
 #### implement solutions that use Azure Event Hub
+
+Der Event Hub wird dann eingesetzt, wenn sehr viele Events gleichzeitig versendet und empfangen werden soll (er kann Millionen von Events gleichzeitig empfangen/versenden).
+
+Ein weiterer interessanter Anwendungsfall ist die Daten aus entsprechenden Events direkt an Power BI zu übergeben ...
 
 ### Develop message-based solutions
 
