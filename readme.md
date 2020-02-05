@@ -880,6 +880,43 @@ Mit einem GET-Request auf die URL, die das obige Skript erstellt, kann der Table
 
 Mit einem POST-Request können Daten hinzugefügt werden. Dabei ist zu beachten, dass PartionKey und RowKey immer angegeben werden müssen!
 
+Alternativ hier der Code in C#:
+
+```powershell
+var storageAccount = CloudStorageAccount.Parse(CONNECTION_STRING);
+var tableClient = storageAccount.CreateCloudTableClient();
+
+var table = tableClient.GetTableReference("test");
+table.CreateIfNotExistsAsync();
+
+var person = new PersonEntity()
+{
+  PartitionKey = "AT",
+  RowKey = "1",
+  FirstName = "A",
+  LastName = "B"
+};
+
+var insertOperation = TableOperation.Insert(person);
+table.ExecuteAsync(insertOperation).Wait();
+
+person.LastName = "X";
+var replaceOperation = TableOperation.InsertOrReplace(person);
+table.ExecuteAsync(replaceOperation).Wait();
+
+var condition = TableQuery.CombineFilters(
+  TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "AT"),
+  TableOperators.And,
+  TableQuery.GenerateFilterCondition("LastName", QueryComparisons.Equal, "X"));
+
+var query = new TableQuery<PersonEntity>().Where(condition);
+var result = table.ExecuteQuerySegmentedAsync(query, null).Result;
+
+var personResult = result.Results[0];
+```
+
+PersonEntity ist eine Klasse, die von TableEntity erbt. Das ganze Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzStorageTable](https://github.com/stenet/az-203-prep/tree/master/vs/AzStorageTable).
+
 #### implement partitioning schemes
 
 Beim vorherigen Punkt wurde schon einmal der PartitionKey erwähnt. Dieser spielt beim Table Storage und auch Cosmos DB eine ganze entscheidende Rolle.
