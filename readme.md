@@ -915,6 +915,8 @@ var result = table.ExecuteQuerySegmentedAsync(query, null).Result;
 var personResult = result.Results[0];
 ```
 
+Wenn mehrere Änderungen innerhalb einer Tabelle gemacht werden müssen, dann kann auch eine Instanz von TableBatch erstellt werden, dort alle Änderungen eingefügt, und diese dann mit ExecuteBatchAsync ausgeführt werden.
+
 PersonEntity ist eine Klasse, die von TableEntity erbt. Das ganze Beispiel ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzStorageTable](https://github.com/stenet/az-203-prep/tree/master/vs/AzStorageTable).
 
 #### implement partitioning schemes
