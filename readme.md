@@ -1295,6 +1295,29 @@ Das war es auf der Azure-Seite. Jetzt zum Client Code. Der Connection-String wir
 
 Für MFA wird Azure Active Directory Premium benötigt. 
 
+Im Kontext von MFA kommt oft der Begriff "Conditional Access".
+
+![Conditional Access](images/az_conditional_access.png)
+
+[https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/overview](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/overview)
+
+
+Hierbei geht es darum, dass Anwendungen und primär Daten so gut wie möglich geschützt sind, ohne den Benutzer unnötig mit Sicherheitsabfragen zu belästigen. 
+
+Nachfolgend ein sehr vereinfachtes Beispiel für eine Conditional Access Policy:
+
+* Ein Benutzer meldet sich mit Benutzer + Passwort in seinem Email-Account an. 
+* Macht er dies von dem Ort, von dem er es die letzten Male schon gemacht hat, dann wird er direkt angemeldet.
+* Wenn nicht, dann muss er zusätzlich einen PIN eingeben, der im per SMS auf sein Telefon gesendet wurde.
+
+Dabei können eine Vielzahl von Faktoren eine Rolle spielen:
+
+* ist der Benutzer ein Administrator
+* was für ein Gerät verwendet er
+* ....
+
+Dies kann auch soweit gehen, dass er zwar Zugriff bekommt, aber mitunter nur eingeschränkten.
+
 #### implement OAuth2 authentication
 
 Die nachfolgende Grafik veranschaulicht den Ablauf bei OAuth2.
