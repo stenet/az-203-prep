@@ -606,7 +606,22 @@ az webapp deployment source config `
   --git-token $token
 ```
 
-Soll kein automatischer Sync zwischen GitHub und der Web App gemacht werden, kann zusätzlich das Flag "--manual-integration" angegeben werden.
+Soll kein automatischer Sync zwischen GitHub und der Web App gemacht werden, kann zusätzlich das Flag "--manual-integration" angegeben werden. Um einen Sync auszulösen, wird der folgende Befehl verwendet:
+
+```powershell
+az webapp deployment source sync `
+  -g TestRG `
+  --name nginx20200129
+```
+
+Ein weiteres cooles Feature in Web Apps sind Slots. Eine Web App kann in mehreren Slots sein (z.B. ein Test-Slot und ein Produktiv-Slot). Um Slots zu erzeugen wird folgender Befehl ausgeführt:
+
+```powershell
+az webapp deployment slot create `
+  -g TestRG `
+  --name nginx20200129 `
+  --slot slot20200129
+```
 
 Um TLS mutual authentication zu konfigurieren im Anschluss noch folgenden Befehl ausführen:
 
