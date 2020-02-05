@@ -1576,6 +1576,16 @@ Ein weiterer interessanter Anwendungsfall ist die Daten aus entsprechenden Event
 
 #### implement solutions that use Azure Service Bus
 
+Um einen Service Bus zu erstellen:
+
+```powershell
+New-AzServiceBusNamespace `
+  -ResourceGroupName TestRG `
+  -Name bus20200205 `
+  -Location "West Europe" `
+  -SkuName Standard
+```
+
 Service Bus eignet sich wunderbar für die Kommunikation über Prozess- und Hostgrenzen hinweg.
 
 Unterscheidung zwischen Queue und Topic:
