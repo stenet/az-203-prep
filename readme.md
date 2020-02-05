@@ -593,6 +593,21 @@ az webapp config hostname add `
   --hostname domain.com
 ```
 
+Für ein Continuous Deployment von GitHub muss zusätzlich noch folgendes ausgeführt werden:
+
+```powershell
+$token = "GITHUB_ACCESS_TOKEN";
+
+az webapp deployment source config `
+  -g TestRG `
+  --name nginx20200129 `
+  --repo-url "https://github.com/myrepo" `
+  --branch master `
+  --git-token $token
+```
+
+Soll kein automatischer Sync zwischen GitHub und der Web App gemacht werden, kann zusätzlich das Flag "--manual-integration" angegeben werden.
+
 Das Beispiel habe ich mit der Azure CLI gemacht, da das PowerShell Cmdlet keine Möglichkeit hatte einen Linux Service Plan zu erstellen. 
 
 #### monitor service health by using Azure Monitor
