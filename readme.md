@@ -1443,8 +1443,7 @@ Gesamter Code (wobei es nicht viel mehr ist ;-)) ist unter [https://github.com/s
 
 #### develop code to implement CDN's in solutions
 
-CDN = Content Delivery Network
-TODO
+Anfragen gehen nicht direkt an primären Server, sondern an einen Edge Server (durch DNS an einen für den Anforderer gut gelegene POP (Point of Presence)). Dieser prüft, ob er die gewünschte Datei hat. Wenn ja und TTL noch nicht abgelaufen ist, wird diese retourniert. Wenn nichts, dann wird diese vom primären Server geholt, zwischengespeichert und dann retourniert.
 
 #### invalidate cache content (CDN or Redis)
 
