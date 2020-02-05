@@ -1485,6 +1485,15 @@ Nach einem Logout folgenden Code ausführen:
 appInsights.clearAuthenticatedUserContext();
 ```
 
+Es gibt unterschiedliche Track-Methoden:
+* TrackPageView
+* TrackEvent
+* TrackMetric
+* TrackException
+* TrackRequest
+* TrackTrace
+* TrackDependency
+
 #### analyze and troubleshoot solutions by using Azure Monitor
 
 Azure Monitor muss man sich selbst anschauen. Ist ziemlich selbsterklärend und hat jede Menge Features ...
