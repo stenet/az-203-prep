@@ -1653,7 +1653,7 @@ Thema wurde weiter oben bereits behandelt/angeschnitten.
 
 Der Event Hub wird dann eingesetzt, wenn sehr viele Events gleichzeitig versendet und empfangen werden soll (er kann Millionen von Events gleichzeitig empfangen/versenden).
 
-Ein weiterer interessanter Anwendungsfall ist die Daten aus entsprechenden Events direkt an Power BI zu übergeben ...
+Mittels Event Hubs Capture können Events in einen Azure Blob Storage oder Azure Data Lake Storage gestreamt werden (mit Angabe eines Partition-Keys).
 
 ### Develop message-based solutions
 
