@@ -1663,6 +1663,14 @@ Bei der Verwendung eines Topics funktioniert es leicht anders. Dort wird ein Top
 
 Ein komplettes ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzServiceBus](https://github.com/stenet/az-203-prep/tree/master/vs/AzServiceBus).
 
+Dem SubscriptionClient können "Rules" hinzugefügt werden. Diese schränken die Nachrichten, die empfangen werden sollen ein (z.B. nur Nachrichten mit Priorität hoch). Es gibt folgende Filter:
+
+* Boolean Filter - ein true/false Filter
+* SQL Filter - SQL ähnlicher Filter [https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-sql-filter](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-sql-filter)
+* Correlation Filter - unterstützt nur "gleich" Operator; darin aber effizienter als SQL Filter
+
+Zu berücksichtigen gilt, dass die Filter alle Nachrichten-Eigenschaften evaluieren können, nicht aber den Body der Nachricht! Dafür können aber bei UserProperties hinzugefügt werden, die ebenfalls validiert werden können.
+
 #### implement solutions that use Azure Queue Storage queues
 
 In einer sehr vereinfachten Form kann das, was mit dem Service Bus und Queue gemacht werden kann, auch mit der Queue Storage gemacht werden. Der Nachteil ist allerdings, dass hier ein ständiges Pollen auf neue Nachrichten gemacht werden muss ...
