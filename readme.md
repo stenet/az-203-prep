@@ -608,6 +608,17 @@ az webapp deployment source config `
 
 Soll kein automatischer Sync zwischen GitHub und der Web App gemacht werden, kann zusätzlich das Flag "--manual-integration" angegeben werden.
 
+Um TLS mutual authentication zu konfigurieren im Anschluss noch folgenden Befehl ausführen:
+
+```powershell
+az webapp update `
+  -g TestRG `
+  --name nginx20200129 `
+  --set clientCertEnabled=true
+```
+
+Das Zertifikat wird im Request im X-ARR-ClientCert Header Base64 enkodiert übermittelt (https vorausgesetzt!) bzw. in ASP.NET in HttpRequest.ClientCertificate.
+
 Das Beispiel habe ich mit der Azure CLI gemacht, da das PowerShell Cmdlet keine Möglichkeit hatte einen Linux Service Plan zu erstellen. 
 
 #### monitor service health by using Azure Monitor
