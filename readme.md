@@ -1138,6 +1138,13 @@ New-AzSqlDatabaseDataMaskingRule `
 Damit Benutzer die Daten ohne Maske sehen, benötigen sie die "UNMASK"-Berechtigung.
 Übrigens, obwohl ein Benutzer den echten Inhalt nicht sieht, kann er diesen (vorausgesetzt er hat die Rechte zum Schreiben) ändern!
 
+Ein weitere nettes Feature ist "always encrypted". Ziel ist es sensible Daten wie z.B. Kreditkartennummern, die in der Datenbank gespeichert sind, zu verschlüsseln. Dabei bekommt die Datenbank den unverschlüsselten Wert selbst nie zu sehen. Für das verschlüsseln und entschlüsseln ist der Client-Treiber zuständig.
+
+Es gibt zwei Typen von Verschlüsselungen:
+
+* deterministic - hierbei ist ein entschlüsselter Wert immer der gleiche verschlüsselte Wert. Dadurch kann, wenn man bei einem Datensatz die Bedeutung dieses Wertes kennt, dies auf die anderen Datensätze mit gleichem Wert abgeleitet werden (z.B. sehr problematisch bei bool Spalten).
+* randomized - hier nicht :-)
+
 #### provision and configure Azure SQL Database serverless instances
 
 wurde weiter oben schon behandelt ...
