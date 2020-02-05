@@ -1508,7 +1508,22 @@ Anfragen gehen nicht direkt an primären Server, sondern an einen Edge Server (d
 
 Bei Redis kann während des Erstellens eines Keys ein Zeitraum angegeben werden, nachdem der Key gelöscht wird.
 
-Bei CDN kann dies über "Caching rules" und Angabe von Zeiten gesteuert werden. 
+Bei CDN kann dies über "Caching rules" gesteuert werden. Dabei wird zwischen zwei Typen unterschieden:
+
+* Global caching rules - eine globale Rule pro Endpunkt; dieser überschreibt ggf. die Cache Headers
+* Custom caching rules - eine oder mehrere Rules pro Endpunkt; beziehen sich auf Pfade oder Dateiendungen, werde der Reihe nach geprüft und überschreiben die globale Rule.
+
+Dann gibt es pro Cache Rule noch Caching behaviors:
+
+* Bypass cache - Keine Cache
+* Override - Überschreibt die Cache Duration
+* Set if missing - Behält die ursprünglichen Cache Headers; wenn fehlen wird Cache Duration ergänzt
+
+Bzgl. Query Strings gibt es ebenfalls drei Varianten:
+
+* Ignore query strings - falls die Datei noch nicht im Cache ist, wird sie inkl. dem Query-String vom primären Server geholt. Bei allen weiteren Requests wird der Query String einfach ignoriert
+* Bypass caching for query string - wenn eine Query String enthalten ist, wird nicht gecacht
+* Cache very unique URL - jede URL bekommt einen separaten Cache-Eintrag
 
 ### Instrument solutions to support monitoring and logging
 
@@ -1654,7 +1669,19 @@ TODO
 
 #### define policies for APIs
 
-TODO
+Nachfolgend ein paar Policies, die öfter in der Dokumentation erwähnt werden:
+
+* find-and-replace - inbound, outbound, backend; sucht nach einen Text im Request oder Response und ersetzt diesen durch einen anderen Text
+* cache-lookup - inbound; liefert den Response aus dem Cache
+* cache-lookup-value - inbound, outbound, backend; liefert einen Wert aus dem Cache
+* cache-store - outbound, speichert den Response in den Cache
+* cache-store-value - inbound, outbound, backend; speichert einen Wert in den Cache
+* set-variable - inbound, outbound, backend; setzt, die der Name schon vermuten lässt, eine Variable ;-)
+
+Für Berechtigungen gibt es folgende Policies:
+* authentication-basic
+* authentication-certificate
+* authentication-managed-identity
 
 ### Develop event-based solutions
 
