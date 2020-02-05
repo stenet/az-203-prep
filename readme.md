@@ -617,7 +617,17 @@ Im Server-Code das NuGet Package "Microsoft.Azure.NotificationHub" hinzufügen, 
 
 #### enable offline sync for mobile app
 
-TODO
+Offline data sync ist eine Client und Server SDK, welche im Client-Bereich für Android, Cordova, iOS, Xamarin und UWP zur Verfügung steht.
+
+Damit wird es auf einfache Weise ermöglicht die App auch Offline bedienbar zu machen, in dem Änderungen lokal gespeichert und zu einem späteren Zeitpunkt synchronisiert werden.
+
+Funktionsweise Offline Synchronisation:
+
+* Push - Neuanlage, Änderungen und Löschvorgänge werden vom Client an den Server übertragen.
+* Pull - pro Tabelle werden die Daten vom Server geholt.
+* Implicit Pushes - falls für eine Tabelle ein Pull ausgeführt wird, für die noch Daten für einen Push vorhanden sind, dann wird zuerst der Push durchgeführt.
+* Incremental Sync - beim Pull werden nicht alle Daten der Tabelle geholt, sondern nur die, die sich seit dem letzten Mal geändert haben. Dafür der Server ein updatedAt liefern
+* Purging - damit werden die Daten einer Tabelle gelöscht. Falls zu diesem Zeitpunkt noch Daten zum Pushen vorhanden sind, wird eine Exception geworfen (außer es wird "force purge" angegeben).
 
 #### implement a remote instrumentation strategy for mobile devices
 
