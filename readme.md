@@ -1102,6 +1102,40 @@ Set-AzSqlDatabase `
 
 zu Basic ;-)
 
+Allerdings gibt es doch ein paar Punkte, die generell interessant sind, die nachfolgend behandelt werden.
+
+Data Masking ermöglicht es einzelne Spalten für unberechtigte Benutzer zu verschleiern. Dafür gibt es unterschiedliche Masken:
+
+* Default - Text ergibt XX oder XXXX, Nummer ergibt 0, Datum ergibt 01.01.1900
+* Email - ergibt den ersten echten Buchstaben + .com am Ende. Beispiel: sXXXX@XXXX.com
+* Random - bei Nummern irgendeine Zufallszahl
+* Custom string - Präfix + Padding + Suffix. Beispiel: sXXXXXXXXXm
+
+Die Definition kann bei der Anlage der Spalte oder später mit einem ALTER COLUMN-Befehl gemacht werden:
+
+```sql
+alter table [Person] alter column [Test] masked with (function = 'default()')
+alter table [Person] alter column [Email] masked with (function = 'email()')
+alter table [Person] alter column [Alter] masked with (function = 'random(1, 99)')
+alter table [Person] alter column [Alter] masked with (function = 'partial(0, "XXX-XX-X", 4)')
+```
+
+Alternativ kann in Azure auch ein PowerShell-Befehl abgesetzt werden:
+
+```powershell
+New-AzSqlDatabaseDataMaskingRule `
+  -ResourceGroupName TestRG `
+  -ServerName server20200205 `
+  -DatabaseName database01 `
+  -SchemaName dbo `
+  -TableName Person `
+  -ColumnName Test `
+  -MaskingFunction Default
+```
+
+Damit Benutzer die Daten ohne Maske sehen, benötigen sie die "UNMASK"-Berechtigung.
+Übrigens, obwohl ein Benutzer den echten Inhalt nicht sieht, kann er diesen (vorausgesetzt er hat die Rechte zum Schreiben) ändern!
+
 #### provision and configure Azure SQL Database serverless instances
 
 wurde weiter oben schon behandelt ...
