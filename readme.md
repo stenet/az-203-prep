@@ -1293,7 +1293,7 @@ Das war es auf der Azure-Seite. Jetzt zum Client Code. Der Connection-String wir
 
 #### implement multi-factor or Windows authentication by using Azure AD
 
-Dafür habe ich keine Rechte.
+Für MFA wird Azure Active Directory Premium benötigt. 
 
 #### implement OAuth2 authentication
 
