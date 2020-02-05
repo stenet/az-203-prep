@@ -1447,6 +1447,8 @@ In Application Insights kann beispielsweise unter "Availability" eine Ping-Prüf
 
 Nachdem dies alles im Azure Portal erstellt wird (außer man macht gerne ARM-Templates): [https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow](https://docs.microsoft.com/en-us/azure/logic-apps/quickstart-create-first-logic-app-workflow).
 
+Die Logic Apps sind grundsätzlich allerdings auch nur JSON-Dateien. Für EAI (= Enterprise Application Integration) und B2B steht es zusätzlich den "Enterprise Integration Pack", der zusätzlich B2B, EDI und XML Erweiterungen zur Behandlung von komplexen B2B Aufgaben.
+
 #### create a custom connector for Logic Apps
 
 Um einen benutzerdefinierten Connector zu erstellen, muss die API beschrieben werden, mit der eine Verbindung hergestellt werden soll. Falls eine Postman Collection oder OpenAPI zur Verfügung steht, kann diese direkt hinzugefügt werden.
