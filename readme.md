@@ -1582,6 +1582,16 @@ Es gibt unterschiedliche Track-Methoden:
 * TrackTrace
 * TrackDependency
 
+Im Bereich "Usage" im Azure Portal gibt es u.a. folgende Inhalte:
+
+* Users - wie viele Benutzer werden die App?
+* Sessions - wie viele Sitzungen? Sitzungen werden nach 30 Minuten Inaktivität oder 24 Stunden beendet
+* Events - wie oft wurden bestimmte Seite oder Features verwendet?
+* Funnels - wie verwenden Benutzer die Anwendung (Ablauf, Prozess, Workflow)?
+* User Flows - wie navigieren Benutzer zwischen Seiten und Features?
+* Retention - wie viele Benutzer kommen zurück?
+* Impact - wie bestimmten Ladezeit und andere Eigenschaften das Verhalten der Benutzer?
+
 #### analyze and troubleshoot solutions by using Azure Monitor
 
 Azure Monitor muss man sich selbst anschauen. Ist ziemlich selbsterklärend und hat jede Menge Features ...
