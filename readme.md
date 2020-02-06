@@ -654,7 +654,11 @@ Nicht selbst ausprobiert, aber hier die Kurzfassung aus der Dokumentation:
 
 In Azure einen "Notification Hub" erstellen. Sobald dieser erstellt ist, diesen öffnen und das Apple, Google oder weiß der Geier was Konto hinzufügen ;-)
 
-Im Server-Code das NuGet Package "Microsoft.Azure.NotificationHub" hinzufügen, einen NotificationHubClient erstellen und dort die passende Send***-Methode aufrufen. 
+Im Server-Code das NuGet Package "Microsoft.Azure.NotificationHub" hinzufügen, einen NotificationHubClient erstellen und dort die passende Send***-Methode aufrufen:
+
+* SendAppleNativeNotificationAsync - Apple (iOS)
+* SendFcmNativeNotificationAsync - Firebase (Android)
+* SendWindowsNativeNotificationAsync - Windows
 
 #### enable offline sync for mobile app
 
