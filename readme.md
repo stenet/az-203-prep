@@ -1142,8 +1142,12 @@ Ein weitere nettes Feature ist "always encrypted". Ziel ist es sensible Daten wi
 
 Es gibt zwei Typen von Verschlüsselungen:
 
-* deterministic - hierbei ist ein entschlüsselter Wert immer der gleiche verschlüsselte Wert. Dadurch kann, wenn man bei einem Datensatz die Bedeutung dieses Wertes kennt, dies auf die anderen Datensätze mit gleichem Wert abgeleitet werden (z.B. sehr problematisch bei bool Spalten).
+* deterministic - hierbei ist ein entschlüsselter Wert immer der gleiche verschlüsselte Wert. Dadurch kann, wenn man bei einem Datensatz die Bedeutung dieses Wertes kennt, dies auf die anderen Datensätze mit gleichem Wert abgeleitet werden (z.B. sehr problematisch bei bool Spalten). Damit sind aber Lookups, Joins und Group by weiterhin möglich.
 * randomized - hier nicht :-)
+
+Es gibt zwei Schlüssel, die hierfür notwendig sind:
+* Master Key (CM) - dieser wird extern (z.B. KeyVault) gespeichert.
+* Encryption Key - mit diesem werden die Daten einer Spalte verschlüsselt. Der Encryption Key ist verschlüsselt (mit dem Master Key) im SQL-Server gespeichert. Damit ist auch klar, dass der SQL-Server selbst die Daten nicht entschlüsseln kann. 
 
 #### provision and configure Azure SQL Database serverless instances
 
