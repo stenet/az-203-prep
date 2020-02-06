@@ -1602,6 +1602,8 @@ Es ist wahrscheinlich am sinnvollsten die Logic App im Portal zu erstellen und a
 
 ### Integrate Azure Search within solutions
 
+Mein gesamtes Beispiel in .NET ist unter [https://github.com/stenet/az-203-prep/tree/master/vs/AzSearch](https://github.com/stenet/az-203-prep/tree/master/vs/AzSearch).
+
 #### create an Azure Search index
 
 Ich habe zwar versucht einen Search Service mit PowerShell oder der Azure CLI zu erstellen, aber in PowerShell gab es das Cmdlet dafür überhaupt nicht und die Azure CLI meinte immer nur, dass der Name bereits in Verwendung ist. Daher habe ihn dann im Portal erstellt.
@@ -1612,6 +1614,27 @@ Die Erstellung eines Index ist ähnlich der Erstellung einer Tabelle in einer re
 * filterable
 * sortable
 * searchable
+
+Mit der .NET SDK geht's wie folgt:
+
+```csharp
+var serviceClient = new SearchServiceClient(
+  SERVICE_NAME,
+  new SearchCredentials(API_KEY));
+
+if (serviceClient.Indexes.Exists(INDEX_NAME))
+  serviceClient.Indexes.Delete(INDEX_NAME);
+
+serviceClient.Indexes.Create(new Microsoft.Azure.Search.Models.Index()
+{
+  Name = INDEX_NAME,
+  Fields = new List<Field>()
+  {
+    new Field("Id", DataType.String) { IsKey = true, IsRetrievable = true },
+    new Field("Description", DataType.String) { IsSearchable = true, IsRetrievable = true }
+  }
+});
+```
 
 #### import searchable data
 
@@ -1631,6 +1654,31 @@ Dabei können die Datensätze durch cognitive Funktionen erweitert werden:
 * Übersetzung
 * ...
 
+Daten mit dem .NET SDK in den Index laden:
+
+```csharp
+var indexClient = serviceClient.Indexes.GetClient(INDEX_NAME);
+
+var path = @"c:\temp";
+var pattern = "*.txt";
+var files = Directory.GetFiles(path, pattern);
+
+var items = new List<object>();
+
+foreach (var filePath in files)
+{
+  var text = File.ReadAllText(filePath);
+  items.Add(new
+  {
+    Id = Convert.ToBase64String(Encoding.UTF8.GetBytes(filePath)),
+    Description = text
+  });
+}
+
+var batch = IndexBatch.Upload(items);
+indexClient.Documents.Index(batch);
+```
+
 #### query the Azure Search index
 
 Bei der Suche gibt es zwei Möglichkeiten des Abfragentyps:
@@ -1645,6 +1693,23 @@ https://search20200203t2.search.windows.net/indexes/hotels-sample-index/docs?api
 ```
 
 Bei der Suche muss immer die api-version angegeben werden. Wird kein expliziter queryType angegeben, handelt es sich um simple.
+
+Daten mit der .NET SDK suchen:
+
+```csharp
+var searchClient = new SearchIndexClient(
+  SERVICE_NAME,
+  INDEX_NAME,
+  new SearchCredentials(API_KEY));
+
+var searchResult = searchClient.Documents.Search("peta");
+
+var resultItem = searchResult.Results.FirstOrDefault();
+if (resultItem == null)
+  return;
+
+var resultFilePath = Encoding.UTF8.GetString(Convert.FromBase64String((string)resultItem.Document["Id"]));
+```
 
 #### implement cognitive search
 
